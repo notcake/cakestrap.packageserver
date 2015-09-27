@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>CakeStrap Package Server</title>
+		<title>Cakestrap Package Server</title>
 		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/thirdparty/bootstrap/bootstrap.min.css") }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/thirdparty/fontawesome/font-awesome.min.css") }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/thirdparty/googlefonts/opensans.css") }}">
@@ -15,22 +15,32 @@
 		<script src="{{ url_for("static", filename = "js/thirdparty/react/react-with-addons.min.js") }}"></script>
 	</head>
 	<body>
-		<div class="page">
-			<h1>Flaskr</h1>
-			<div class="metanav">
-				{% if not session.logged_in %}
-					<a href="{{ url_for("login.login") }}">log in</a>
-				{% else %}
-					<a href="{{ url_for("login.logout") }}">log out</a>
-				{% endif %}
+		<div class="navigation-bar">
+			<div style="overflow: auto">
+				<div style="float: left">
+					<h1 style="margin-top: 8px; margin-bottom: 0px">Cakestrap Packages</h1>
+				</div>
+				<div style="float: right; padding: 8px 0px">
+					{% if not session.logged_in %}
+						<a href="{{ url_for("login.login") }}">
+							<img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png" alt="Sign in through STEAM" />
+						</a>
+					{% else %}
+						<a href="{{ url_for("login.logout") }}">log out</a>
+					{% endif %}
+				</div>
 			</div>
+		</div>
+		<div class="page">
 			{% for message in get_flashed_messages() %}
 				<div class="flash">
 					{{ message }}
 				</div>
 			{% endfor %}
-			{% block body %}
-			{% endblock %}
+			<div class="content">
+				{% block body %}
+				{% endblock %}
+			</div>
 		</div>
 	</body>
 </html>
