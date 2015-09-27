@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+	<head>
+		<title>CakeStrap Package Server</title>
+		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/thirdparty/bootstrap/bootstrap.min.css") }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/thirdparty/fontawesome/font-awesome.min.css") }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/main.css") }}">
+		
+		<script src="{{ url_for("static", filename = "js/thirdparty/bootstrap/bootstrap.min.js") }}"></script>
+		<script src="{{ url_for("static", filename = "js/thirdparty/jquery/jquery-2.1.4.min.js") }}"></script>
+		
+		<script src="{{ url_for("static", filename = "js/thirdparty/react/JSXTransformer.js") }}"></script>
+		<script src="{{ url_for("static", filename = "js/thirdparty/react/react-with-addons.min.js") }}"></script>
+	</head>
+	<body>
+		<div class="page">
+			<h1>Flaskr</h1>
+			<div class="metanav">
+				{% if not session.logged_in %}
+					<a href="{{ url_for("login.login") }}">log in</a>
+				{% else %}
+					<a href="{{ url_for("login.logout") }}">log out</a>
+				{% endif %}
+			</div>
+			{% for message in get_flashed_messages() %}
+				<div class="flash">
+					{{ message }}
+				</div>
+			{% endfor %}
+			{% block body %}
+			{% endblock %}
+		</div>
+	</body>
+</html>
