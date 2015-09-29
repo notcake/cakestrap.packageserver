@@ -6,7 +6,8 @@ import knotcake.steam
 blueprint = Blueprint("login", __name__)
 
 steamOpenId = knotcake.steam.OpenId()
-steamOpenId.localUrl = "http://packages.knotcake.net/login"
+steamOpenId.localIdentity = "http://packages.knotcake.net"
+steamOpenId.returnUrl     = "http://packages.knotcake.net/login"
 
 @blueprint.route("/login")
 def login():
