@@ -1,4 +1,9 @@
+import certifi
+import re
 import urllib
+import urllib3
+
+httpPoolManager = urllib3.PoolManager(cert_reqs = "CERT_REQUIRED", ca_certs = certifi.where())
 
 class OpenId(object):
 	def __init__(self):
@@ -18,3 +23,32 @@ class OpenId(object):
 		parameters = [ k + "=" + v for k, v in parameters.iteritems() ]
 		parameters = str.join("&", parameters)
 		return "https://steamcommunity.com/openid/login?" + parameters
+	
+	def validateLogin(self, parameters):
+		signedParameters = ["openid." + parameterName for parameterName in parameters["openid.signed"].split(",")]
+		validationParameters = { parameterName: parameters[parameterName] for parameterName in signedParameters }
+		validationParameters["openid.ns"]           = "http://specs.openid.net/auth/2.0"
+		validationParameters["openid.signed"]       = parameters["openid.signed"]
+		validationParameters["openid.sig"]          = parameters["openid.sig"]
+		validationParameters["openid.assoc_handle"] = parameters["openid.assoc_handle"]
+		validationParameters["openid.mode"]         = "check_authentication"
+		
+		validationParameters = { k: urllib.quote(v, "") for k, v in validationParameters .iteritems() }
+		validationParameters = [ k + "=" + v for k, v in validationParameters .iteritems() ]
+		validationParameters = str.join("&", validationParameters )
+		
+		response = httpPoolManager.request(
+			"POST",
+			"https://steamcommunity.com/openid/login",
+			body = validationParameters,
+			headers = {
+				"Accept-Language": "en",
+				"Content-Type": "application/x-www-form-urlencoded"
+			}
+		)
+		
+		if "is_valid:true" not in response.data: return None
+		
+		match = re.match(r"^http://steamcommunity.com/openid/id/([0-9]+)$", parameters["openid.claimed_id"])
+		
+		return int(match.group(1))
