@@ -17,3 +17,17 @@ hr {
 	padding-right: 8px;
 	background-color: cornflowerblue;
 }
+
+.navigation-bar a {
+	color: white;
+	text-decoration: none;
+}
+
+.navigation-bar a.block {
+	display: inline-block;
+	padding: 12px;
+}
+
+.navigation-bar a.block:hover {
+	background-color: rgba(255, 255, 255, 0.3);
+}
