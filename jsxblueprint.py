@@ -20,14 +20,12 @@ def JSXBlueprint(app):
 		# Unprocessed .js files
 		inputPath = app.config["Path"] + "/static/js/" + path
 		if os.path.isfile(inputPath):
-			return flask.send_file(inputPath, conditional = True)
+			return staticJs(flask.request, inputPath)
 		
 		# Unprocessed .jsx files
 		inputPath = app.config["Path"] + "/static/jsx/" + path
 		if os.path.isfile(inputPath):
-			response = flask.send_file(inputPath, conditional = True)
-			response.content_type = "application/javascript"
-			return response
+			return staticJs(flask.request, inputPath)
 		
 		# Processed .jsx files
 		inputPath = app.config["Path"] + "/static/jsx/" + path + "x"
@@ -42,9 +40,7 @@ def JSXBlueprint(app):
 			
 			# HTTP 304
 			if lastModificationTime == cachedModificationTime:
-				response = flask.make_response()
-				response.status_code = 304
-				return response
+				return http304()
 			
 			# Regenerate if no processed copy exists
 			# or the cached version is out of date
@@ -67,5 +63,26 @@ def JSXBlueprint(app):
 			return response
 		
 		flask.abort(404)
+	
+	def http304():
+		response = flask.make_response()
+		response.status_code = 304
+		return response
+	
+	def staticJs(request, path):
+		# File modification time
+		lastModificationTime = int(os.path.getmtime(path))
+		cachedModificationTime = None
 		
+		# Cached modification time
+		if request.if_modified_since is not None:
+			cachedModificationTime = int(calendar.timegm(request.if_modified_since.timetuple()))
+		
+		if lastModificationTime == cachedModificationTime:
+			return http304()
+		
+		response = flask.send_file(path, conditional = True)
+		response.content_type = "application/javascript"
+		return response
+	
 	return blueprint
