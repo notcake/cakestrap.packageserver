@@ -48,6 +48,8 @@ class OpenId(object):
 		)
 		
 		if "is_valid:true" not in response.data: return None
+		if "openid.return_to" not in parameters: return None
+		if parameters["openid.return_to"] != self.returnUrl: return None
 		
 		match = re.match(r"^http://steamcommunity.com/openid/id/([0-9]+)$", parameters["openid.claimed_id"])
 		
