@@ -1,5 +1,3 @@
-import json
-
 from sqlalchemy import select, func
 from sqlalchemy import Column, PrimaryKeyConstraint, ForeignKey, UniqueConstraint
 from sqlalchemy import Boolean, Integer, BigInteger, Text
@@ -19,6 +17,9 @@ class User(Base):
 	mediumProfilePictureUrl = Column("medium_profile_picture_url", Text,       nullable = False)
 	largeProfilePictureUrl  = Column("large_profile_picture_url",  Text,       nullable = False)
 	rank                    = Column("rank",                       Enum("user", "moderator", "administrator", "overlord"), nullable = False)
+	creationTimestamp       = Column("creation_timestamp",         BigInteger, nullable = False)
+	lastLoginTimestamp      = Column("last_login_timestamp",       BigInteger, nullable = True)
+	lastActivityTimestamp   = Column("last_activity_timestamp",    BigInteger, nullable = True)
 	
 	steamUser               = relationship("SteamUser", uselist = False)
 	packages                = relationship("Package",   uselist = True)
@@ -31,17 +32,23 @@ class User(Base):
 	def toDictionary(self, out = None):
 		if out is None: out = {}
 		
-		out["id"]                      = self.id
-		out["steamId64"]               = self.steamId64
+		out["id"]                      = str(self.id)
+		out["steamId64"]               = str(self.steamId64)
 		out["displayName"]             = self.displayName
 		out["smallProfilePictureUrl"]  = self.smallProfilePictureUrl
 		out["mediumProfilePictureUrl"] = self.mediumProfilePictureUrl
-		out["largeProfilePictureUrl"]  = self.mediumProfilePictureUrl
+		out["largeProfilePictureUrl"]  = self.largeProfilePictureUrl
+		out["rank"]                    = self.rank
+		out["creationTimestamp"]       = self.creationTimestamp
+		out["lastLoginTimestamp"]      = self.lastLoginTimestamp
+		out["lastActivityTimestamp"]   = self.lastActivityTimestamp
 		
 		return out
 	
-	def toJson(self):
-		return json.dumps(self.toDictionary())
+	@classmethod
+	def getAll(cls, databaseSession):
+		users = databaseSession.query(User).order_by(User.creationTimestamp.desc()).all()
+		return users
 	
 	@classmethod
 	def getById(cls, databaseSession, id):
@@ -59,6 +66,7 @@ class User(Base):
 		if user is None:
 			user = User()
 			user.steamId64 = steamUser.steamId64
+			user.creationTimestamp = flask.g.time
 			databaseSession.add(user)
 		
 		user.displayName             = steamUser.displayName
