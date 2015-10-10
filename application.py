@@ -1,4 +1,5 @@
 import os.path
+import time
 
 import flask
 from flask import Flask
@@ -32,10 +33,12 @@ app.register_blueprint(UsersBlueprint(app))
 def before_request():
 	g.session = Session(flask.session)
 	g.databaseSession = app.config["DatabaseSessionFactory"] ()
+	g.time = time.time()
 	g.currentUser = None
 	
 	if g.session.isLoggedIn():
 		g.currentUser = User.getById(g.databaseSession, g.session.userId)
+		g.currentUser.lastActivityTimestamp = g.time
 	
 	g.getJsxFileList = app.blueprints["jsx"].getJsxFileList
 
