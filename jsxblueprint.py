@@ -48,7 +48,8 @@ def JSXBlueprint(app):
 			if not os.path.exists(outputPath) or cachedModificationTime is not None:
 				# Delete existing processed copy, so if this fails we don't continue serving
 				# an out of date version
-				os.remove(outputPath)
+				if os.path.exists(outputPath):
+					os.remove(outputPath)
 				
 				# Create output directory
 				outputDirectory = os.path.dirname(outputPath)
