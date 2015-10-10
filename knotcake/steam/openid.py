@@ -33,8 +33,8 @@ class OpenId(object):
 		validationParameters["openid.assoc_handle"] = parameters["openid.assoc_handle"]
 		validationParameters["openid.mode"]         = "check_authentication"
 		
-		validationParameters = { k: urllib.quote(v, "") for k, v in validationParameters .iteritems() }
-		validationParameters = [ k + "=" + v for k, v in validationParameters .iteritems() ]
+		validationParameters = { k: urllib.quote(v, "") for k, v in validationParameters.iteritems() }
+		validationParameters = [ k + "=" + v for k, v in validationParameters.iteritems() ]
 		validationParameters = str.join("&", validationParameters )
 		
 		response = httpPoolManager.request(
