@@ -14,40 +14,24 @@
 		<script src="/js/thirdparty/react/JSXTransformer.js"></script>
 		<script src="/js/thirdparty/react/react-with-addons.min.js"></script>
 		
-		{% for jsxFile in g.getJsxFileList() %}
-			<script src="/js/{{ jsxFile[:-1] }}"></script>
+		{% for jsxFile in g.getJsxFileList() %}<script src="/js/{{ jsxFile[:-1] }}"></script>
 		{% endfor %}
+		
+		<script src="/users/current.jsonp"></script>
 	</head>
 	<body>
-		<div class="navigation-bar">
-			<div style="height: 56px">
-				<div style="height: 100%; float: left; display: table">
-					<div style="display: table-cell; vertical-align: middle">
-						<div style="display: inline-block">
-							<h1 style="margin: 0px">Cakestrap Packages</h1>
-						</div>
-					</div>
-				</div>
-				<div style="height: 100%; float: right; display: table">
-					<div style="display: table-cell; vertical-align: middle">
-						<div style="display: inline-block; text-align: right">
-							{% if not g.session.isLoggedIn() %}
-								<a href="{{ url_for("login.login") }}">
-									<img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png" alt="Sign in through STEAM" />
-								</a>
-							{% else %}
-								<a href="/users/{{ g.currentUser.steamId64 }}" class="block">
-									<img src="{{ g.currentUser.smallProfilePictureUrl}}" />
-									{{ g.currentUser.displayName }}
-								</a>
-								|
-								<a href="{{ url_for("login.logout") }}">Log out</a>
-							{% endif %}
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		<script>
+			var time = {{ g.time }};
+		</script>
+		<script type="text/jsx">
+			$(document).ready(
+				function()
+				{
+					React.render(<NavigationBar user={ currentUser } />, $("#navigation_bar")[0]);
+				}
+			);
+		</script>
+		<div id="navigation_bar"></div>
 		<div class="page">
 			{% for message in get_flashed_messages() %}
 				<div class="flash">

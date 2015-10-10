@@ -13,8 +13,6 @@ hr {
 }
 
 .navigation-bar {
-	padding-left: 8px;
-	padding-right: 8px;
 	background-color: cornflowerblue;
 }
 
@@ -25,10 +23,14 @@ hr {
 
 .navigation-bar a.block {
 	display: inline-block;
-	padding: 12px;
 }
 
-.navigation-bar a.block:hover {
+a.block {
+	display: inline-block;
+	text-decoration: none;
+}
+
+a.block:hover {
 	background-color: rgba(255, 255, 255, 0.3);
 }
 
