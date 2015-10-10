@@ -1,18 +1,22 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Cakestrap Package Server</title>
+		<title>Cakestrap Packages</title>
 		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/thirdparty/bootstrap/bootstrap.min.css") }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/thirdparty/fontawesome/font-awesome.min.css") }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/thirdparty/googlefonts/opensans.css") }}">
 		
 		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/main.css") }}">
 		
-		<script src="js/thirdparty/jquery/jquery-2.1.4.min.js"></script>
-		<script src="js/thirdparty/bootstrap/bootstrap.min.js"></script>
+		<script src="/js/thirdparty/jquery/jquery-2.1.4.min.js"></script>
+		<script src="/js/thirdparty/bootstrap/bootstrap.min.js"></script>
 		
-		<script src="js/thirdparty/react/JSXTransformer.js"></script>
-		<script src="js/thirdparty/react/react-with-addons.min.js"></script>
+		<script src="/js/thirdparty/react/JSXTransformer.js"></script>
+		<script src="/js/thirdparty/react/react-with-addons.min.js"></script>
+		
+		{% for jsxFile in g.getJsxFileList() %}
+			<script src="/js/{{ jsxFile[:-1] }}"></script>
+		{% endfor %}
 	</head>
 	<body>
 		<div class="navigation-bar">
@@ -32,7 +36,7 @@
 									<img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png" alt="Sign in through STEAM" />
 								</a>
 							{% else %}
-								<a href="/user/{{ g.currentUser.steamId64 }}" class="block">
+								<a href="/users/{{ g.currentUser.steamId64 }}" class="block">
 									<img src="{{ g.currentUser.smallProfilePictureUrl}}" />
 									{{ g.currentUser.displayName }}
 								</a>

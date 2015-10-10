@@ -21,10 +21,12 @@ app.config["Path"] = os.path.dirname(os.path.abspath(__file__))
 app.config["SteamWebApi"] = knotcake.steam.WebApi(config["SteamApiKey"])
 
 # Blueprints
-from jsxblueprint import JSXBlueprint
+from jsxblueprint   import JSXBlueprint
 from loginblueprint import LoginBlueprint
+from usersblueprint import UsersBlueprint
 app.register_blueprint(JSXBlueprint(app))
 app.register_blueprint(LoginBlueprint(app))
+app.register_blueprint(UsersBlueprint(app))
 
 @app.before_request
 def before_request():
@@ -34,6 +36,8 @@ def before_request():
 	
 	if g.session.isLoggedIn():
 		g.currentUser = User.getById(g.databaseSession, g.session.userId)
+	
+	g.getJsxFileList = app.blueprints["jsx"].getJsxFileList
 
 @app.teardown_request
 def teardown_request(exception):

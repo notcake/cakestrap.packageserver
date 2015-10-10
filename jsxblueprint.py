@@ -1,4 +1,5 @@
 import calendar
+import os
 import os.path
 import time
 
@@ -84,5 +85,20 @@ def JSXBlueprint(app):
 		response = flask.send_file(path, conditional = True)
 		response.content_type = "application/javascript"
 		return response
+	
+	def getJsxFileList(directory = None, jsxFileList = None):
+		if jsxFileList is None: jsxFileList = []
+		if directory is None: directory = app.config["Path"] + "/static/jsx/"
+		
+		for (subdirectory, _, fileNames) in os.walk(directory):
+			for fileName in fileNames:
+				filePath = os.path.join(subdirectory, fileName)
+				filePath = filePath[len(directory):]
+				
+				jsxFileList.append(filePath)
+		
+		return jsxFileList
+	
+	blueprint.getJsxFileList = getJsxFileList
 	
 	return blueprint
