@@ -21,23 +21,15 @@ var UserPage = React.createClass(
 		
 		render: function()
 		{
-			if (!this.props.user) {
-				return (
-					<div>
-						<div style={ { overflow: "auto", width: "50%", margin: "8px auto", padding: "16px", backgroundColor: "beige" } }>
-							<h2>This user does not exist!</h2>
-						</div>
-					</div>
-				);
-			}
-			
 			return (
-				<div>
-					<div style={ { overflow: "auto", width: "50%", margin: "8px auto", padding: "16px", backgroundColor: "beige" } }>
+				<div style={ { width: "50%", margin: "8px auto" } }>
+					<h2>{ this.props.user.displayName }</h2>
+					<hr />
+					<div style={ { overflow: "auto", width: "100%", margin: "8px auto", padding: "16px", backgroundColor: "beige" } }>
 						<div className="col-md-3" style={ { width: "auto", marginRight: "16px" } }>
 							<img src={ this.props.user.largeProfilePictureUrl } />
 						</div>
-						<div className="col-md-9">
+						<div>
 							<h2>{ this.props.user.displayName }</h2>
 							<div style={ { marginTop: "2px", paddingLeft: "4px", color: "gray" } }>
 								(<img src={ "/static/images/" + this.state.rankIcons[this.props.user.rank] } style={ { verticalAlign: "top", margin: "0px 2px" } } />{ this.state.rankNames[this.props.user.rank] })
