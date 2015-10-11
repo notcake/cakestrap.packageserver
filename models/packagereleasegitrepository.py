@@ -13,6 +13,7 @@ class PackageReleaseGitRepository(Base):
 	gitRepositoryId  = Column("git_repository_id",  BigInteger, ForeignKey("git_repositories.id"), nullable = False)
 	branch           = Column("branch",             Text,       nullable = False)
 	revision         = Column("revision",           Text,       nullable = True)
+	directory        = Column("directory",          Text,       nullable = False)
 	
 	packageRelease   = relationship("PackageRelease", uselist = False)
 	gitRepository    = relationship("GitRepository",  uselist = False)

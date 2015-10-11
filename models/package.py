@@ -25,11 +25,11 @@ class Package(Base):
 	def toDictionary(self, out = None):
 		if out is None: out = {}
 		
-		out["id"]                      = str(self.id)
-		out["name"]                    = self.name
-		out["displayName"]             = self.displayName
-		out["description"]             = self.description
-		out["creatorUserId"]           = self.creatorUserId
+		out["id"]            = str(self.id)
+		out["name"]          = self.name
+		out["displayName"]   = self.displayName
+		out["description"]   = self.description
+		out["creatorUserId"] = self.creatorUserId
 		
 		return out
 	
