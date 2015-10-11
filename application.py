@@ -22,12 +22,14 @@ app.config["Path"] = os.path.dirname(os.path.abspath(__file__))
 app.config["SteamWebApi"] = knotcake.steam.WebApi(config["SteamApiKey"])
 
 # Blueprints
-from jsxblueprint   import JSXBlueprint
-from loginblueprint import LoginBlueprint
-from usersblueprint import UsersBlueprint
+from jsxblueprint      import JSXBlueprint
+from loginblueprint    import LoginBlueprint
+from usersblueprint    import UsersBlueprint
+from packagesblueprint import PackagesBlueprint
 app.register_blueprint(JSXBlueprint(app))
 app.register_blueprint(LoginBlueprint(app))
 app.register_blueprint(UsersBlueprint(app))
+app.register_blueprint(PackagesBlueprint(app))
 
 @app.before_request
 def before_request():

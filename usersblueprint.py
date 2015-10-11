@@ -13,6 +13,10 @@ def UsersBlueprint(app):
 	def user(steamId64):
 		return flask.render_template("users/user.html", steamId64 = steamId64)
 	
+	@blueprint.route("/users/all")
+	def all():
+		return flask.render_template("users/all.html")
+	
 	@blueprint.route("/users/<int:steamId64>.json")
 	def user_json(steamId64):
 		user = User.getBySteamId64(g.databaseSession, steamId64)
@@ -36,10 +40,6 @@ def UsersBlueprint(app):
 		user = g.currentUser
 		if user is not None: user = user.toDictionary()
 		return app.response_class("var currentUser = " + json.dumps(user), mimetype = "application/json")
-	
-	@blueprint.route("/users/all")
-	def all():
-		return flask.render_template("users/all.html")
 	
 	@blueprint.route("/users/all.json")
 	def all_json():

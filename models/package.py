@@ -21,3 +21,24 @@ class Package(Base):
 	releases      = relationship("PackageRelease",       uselist = True)
 	
 	PrimaryKeyConstraint(id)
+	
+	def toDictionary(self, out = None):
+		if out is None: out = {}
+		
+		out["id"]                      = str(self.id)
+		out["name"]                    = self.name
+		out["displayName"]             = self.displayName
+		out["description"]             = self.description
+		out["creatorUserId"]           = self.creatorUserId
+		
+		return out
+	
+	@classmethod
+	def getAll(cls, databaseSession):
+		packages = databaseSession.query(Package).order_by(Package.id.desc()).all()
+		return packages
+	
+	@classmethod
+	def getById(cls, databaseSession, id):
+		package = databaseSession.query(Package).filter(Package.id == id).first()
+		return package
