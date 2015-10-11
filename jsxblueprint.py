@@ -91,12 +91,21 @@ def JSXBlueprint(app):
 		if jsxFileList is None: jsxFileList = []
 		if directory is None: directory = app.config["Path"] + "/static/jsx/"
 		
+		decoratorFileList = []
+		componentFileList = []
+		
 		for (subdirectory, _, fileNames) in os.walk(directory):
 			for fileName in fileNames:
 				filePath = os.path.join(subdirectory, fileName)
 				filePath = filePath[len(directory):]
 				
-				jsxFileList.append(filePath)
+				if "decorator" in filePath.lower():
+					decoratorFileList.append(filePath)
+				else:
+					componentFileList.append(filePath)
+		
+		jsxFileList.extend(decoratorFileList)
+		jsxFileList.extend(componentFileList)
 		
 		return jsxFileList
 	
