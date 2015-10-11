@@ -27,7 +27,7 @@ def UsersBlueprint(app):
 	def user_jsonp(steamId64):
 		user = User.getBySteamId64(g.databaseSession, steamId64)
 		if user is not None: user = user.toDictionary()
-		return app.response_class("var user = " + json.dumps(user), mimetype = "application/json")
+		return app.response_class("var user = new User(" + json.dumps(user) + ");", mimetype = "application/json")
 	
 	@blueprint.route("/users/current.json")
 	def current_user_json():
@@ -39,7 +39,7 @@ def UsersBlueprint(app):
 	def current_user_jsonp():
 		user = g.currentUser
 		if user is not None: user = user.toDictionary()
-		return app.response_class("var currentUser = " + json.dumps(user), mimetype = "application/json")
+		return app.response_class("var currentUser = new User(" + json.dumps(user) + ");", mimetype = "application/json")
 	
 	@blueprint.route("/users/all.json")
 	def all_json():
@@ -51,6 +51,6 @@ def UsersBlueprint(app):
 	def all_jsonp():
 		users = User.getAll(g.databaseSession)
 		users = [ user.toDictionary() for user in users ]
-		return app.response_class("var users = " + json.dumps(users), mimetype = "application/json")
+		return app.response_class("var users = " + json.dumps(users) + ".map(User.Create);", mimetype = "application/json")
 	
 	return blueprint

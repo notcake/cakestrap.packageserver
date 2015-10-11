@@ -1,24 +1,5 @@
 var AllUsersPage = React.createClass(
 	{
-		getInitialState: function()
-		{
-			return {
-				rankIcons: {
-					user:          "silkicons/user.png",
-					moderator:     "silkicons/shield.png",
-					administrator: "silkicons/shield.png",
-					overlord:      "steam/emoticons/roar.png"
-				},
-				
-				rankNames: {
-					user:          "Peasant Scrub",
-					moderator:     "Moderator",
-					administrator: "Thought Police",
-					overlord:      "Reptilian Overlord"
-				}
-			};
-		},
-		
 		render: function()
 		{
 			return (
@@ -41,7 +22,7 @@ var AllUsersPage = React.createClass(
 														<span style={ { fontSize: "110%" } }>{ user.displayName }</span>
 														<br />
 														<span style={ { color: "gray" } }>
-															(<img src={ "/static/images/" + this.state.rankIcons[user.rank] } style={ { verticalAlign: "top", margin: "0px 2px" } } />{ this.state.rankNames[user.rank] })
+															(<img src={ user.getRankIcon() } style={ { verticalAlign: "top", margin: "0px 2px" } } />{ user.getRankName() })
 														</span>
 													</div>
 												</a>

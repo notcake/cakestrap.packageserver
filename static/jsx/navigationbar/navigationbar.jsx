@@ -13,7 +13,7 @@ var NavigationBar = React.createClass(
 					</VerticalCenter>
 					<VerticalCenter style={ { float: "right", textAlign: "right" } }>
 						{
-							this.props.user ?
+							!this.props.user.isAnonymous() ?
 								<div style={ { display: "inline", color: "white" } }>
 									<a href={ "/users/" + this.props.user.steamId64 } className="block" style={ { verticalAlign: "middle", height: "100%", paddingLeft: "8px", paddingRight: "8px" } }>
 										<VerticalCenter>

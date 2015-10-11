@@ -5,7 +5,7 @@ var AllPackagesPage = React.createClass(
 			return (
 				<div style={ { width: "50%", margin: "8px auto" } }>
 					<div style={ { float: "right" } }>
-						<Button href="/packages/create" icon="/static/images/silkicons/add.png" text="Add package" />
+						<Button visible={ currentUser.canCreatePackages() } href="/packages/create" icon="/static/images/silkicons/add.png" text="Add package" />
 					</div>
 					<h2>Packages</h2>
 					<hr />

@@ -14,9 +14,12 @@
 		<script src="/js/thirdparty/react/JSXTransformer.js"></script>
 		<script src="/js/thirdparty/react/react-with-addons.min.js"></script>
 		
+		<script src="/js/knotcake/oop/class.js"></script>
+		
 		{% for jsxFile in g.getJsxFileList() %}<script src="/js/{{ jsxFile[:-1] }}"></script>
 		{% endfor %}
 		
+		<script src="/js/models/user.js"></script>
 		<script src="/users/current.jsonp"></script>
 	</head>
 	<body>
