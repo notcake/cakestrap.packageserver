@@ -7,17 +7,17 @@ function StyleDecorator(object)
 	methodTable.render = function()
 	{
 		var visible = this.props.visible;
-		if (visible == undefined)
+		if (visible === undefined)
 		{
 			visible = true;
 		}
 		
 		var element = render.call(this);
-		element.style = Object.assign(
+		element.props.style = Object.assign(
 			{},
 			this.props.style || {},
-			this.props.visible ? {} : { display: "none" },
-			element.style
+			visible ? {} : { display: "none" },
+			element.props.style
 		);
 		
 		return element;
