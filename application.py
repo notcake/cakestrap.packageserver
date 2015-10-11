@@ -40,7 +40,10 @@ def before_request():
 	
 	if g.session.isLoggedIn():
 		g.currentUser = User.getById(g.databaseSession, g.session.userId)
-		g.currentUser.lastActivityTimestamp = g.time
+		if g.currentUser is not None:
+			g.currentUser.lastActivityTimestamp = g.time
+		else:
+			g.session.logOut()
 	
 	g.getJsxFileList = app.blueprints["jsx"].getJsxFileList
 
