@@ -42,3 +42,9 @@ class Package(Base):
 	def getById(cls, databaseSession, id):
 		package = databaseSession.query(Package).filter(Package.id == id).first()
 		return package
+	
+	@classmethod
+	def getByName(cls, databaseSession, name):
+		name = name.lower()
+		package = databaseSession.query(Package).filter(func.lower(Package.name) == name).first()
+		return package
