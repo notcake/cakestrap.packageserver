@@ -33,6 +33,12 @@ def PackagesBlueprint(app):
 		if package is not None: package = package.toDictionary()
 		return app.response_class("var package = " + json.dumps(package), mimetype = "application/json")
 	
+	@blueprint.route("/packages/named.json")
+	def named_json():
+		package = Package.getByName(g.databaseSession, flask.request.args.get("name", ""))
+		if package is not None: package = package.toDictionary()
+		return app.response_class(json.dumps(package), mimetype = "application/json")
+	
 	@blueprint.route("/packages/all.json")
 	def all_json():
 		packages = Package.getAll(g.databaseSession)
