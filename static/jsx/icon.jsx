@@ -9,7 +9,7 @@ var Icon = React.createClass(
 				return <Spinner />;
 			}
 			
-			if (/[a-zA-Z0-9_]/.test(icon))
+			if (/^[a-zA-Z0-9_]*$/.test(icon))
 			{
 				icon = "/static/images/silkicons/" + icon + ".png";
 			}
