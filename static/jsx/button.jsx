@@ -6,7 +6,7 @@ var Button = React.createClass(
 				<a href={ this.props.href || "#" } className="btn btn-default" onClick={ this.handleClick }>
 					{
 						this.props.icon ?
-							<img src={ this.props.icon } style={ { verticalAlign: "middle", marginRight: "4px" } } /> :
+							<Icon icon={ this.props.icon } style={ { verticalAlign: "middle", marginRight: "4px" } } />:
 							null
 					}
 					{
