@@ -19,14 +19,14 @@ class SteamUser(Base):
 	
 	@classmethod
 	def getBySteamId64(cls, databaseSession, steamId64):
-		steamUser = databaseSession.query(SteamUser).filter(SteamUser.steamId64 == steamId64).first()
+		steamUser = databaseSession.query(cls).filter(cls.steamId64 == steamId64).first()
 		return steamUser
 	
 	@classmethod
 	def registerSteamUser(cls, databaseSession, steamUserInformation):
-		steamUser = SteamUser.getBySteamId64(databaseSession, steamUserInformation.steamId64)
+		steamUser = cls.getBySteamId64(databaseSession, steamUserInformation.steamId64)
 		if steamUser is None:
-			steamUser = SteamUser()
+			steamUser = cls()
 			steamUser.steamId64 = steamUserInformation.steamId64
 			databaseSession.add(steamUser)
 		

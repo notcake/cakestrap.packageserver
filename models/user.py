@@ -31,6 +31,16 @@ class User(Base):
 	def __init__(self):
 		self.rank = "user"
 	
+	def isAnonymous(self):
+		return self.id is None
+	
+	def canCreatePackages(self):
+		if self.rank == "moderator":     return True
+		if self.rank == "administrator": return True
+		if self.rank == "overlord":      return True
+		
+		return False
+	
 	def toDictionary(self, out = None):
 		if out is None: out = {}
 		
@@ -49,24 +59,24 @@ class User(Base):
 	
 	@classmethod
 	def getAll(cls, databaseSession):
-		users = databaseSession.query(User).order_by(User.creationTimestamp.desc()).all()
+		users = databaseSession.query(cls).order_by(cls.creationTimestamp.desc()).all()
 		return users
 	
 	@classmethod
 	def getById(cls, databaseSession, id):
-		user = databaseSession.query(User).filter(User.id == id).first()
+		user = databaseSession.query(cls).filter(cls.id == id).first()
 		return user
 	
 	@classmethod
 	def getBySteamId64(cls, databaseSession, steamId64):
-		user = databaseSession.query(User).filter(User.steamId64 == steamId64).first()
+		user = databaseSession.query(cls).filter(cls.steamId64 == steamId64).first()
 		return user
 	
 	@classmethod
 	def registerSteamUser(cls, databaseSession, steamUser):
-		user = User.getBySteamId64(databaseSession, steamUser.steamId64)
+		user = cls.getBySteamId64(databaseSession, steamUser.steamId64)
 		if user is None:
-			user = User()
+			user = cls()
 			user.steamId64 = steamUser.steamId64
 			user.creationTimestamp = flask.g.time
 			databaseSession.add(user)

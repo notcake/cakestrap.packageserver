@@ -35,16 +35,16 @@ class Package(Base):
 	
 	@classmethod
 	def getAll(cls, databaseSession):
-		packages = databaseSession.query(Package).order_by(Package.id.desc()).all()
+		packages = databaseSession.query(cls).order_by(cls.id.desc()).all()
 		return packages
 	
 	@classmethod
 	def getById(cls, databaseSession, id):
-		package = databaseSession.query(Package).filter(Package.id == id).first()
+		package = databaseSession.query(cls).filter(cls.id == id).first()
 		return package
 	
 	@classmethod
 	def getByName(cls, databaseSession, name):
 		name = name.lower()
-		package = databaseSession.query(Package).filter(func.lower(Package.name) == name).first()
+		package = databaseSession.query(cls).filter(func.lower(cls.name) == name).first()
 		return package
