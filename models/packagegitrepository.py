@@ -16,6 +16,30 @@ class PackageGitRepository(Base):
 	directory       = Column("directory",         Text,       nullable = False)
 	
 	package         = relationship("Package",       uselist = False)
-	gitRepository   = relationship("GitRepository", uselist = False)
+	gitRepository   = relationship("GitRepository", uselist = False, lazy = "joined")
 	
 	PrimaryKeyConstraint(packageId)
+	
+	def toDictionary(self, out = None):
+		if out is None: out = {}
+		
+		out["packageId"]       = str(self.packageId)
+		out["gitRepositoryId"] = str(self.gitRepositoryId)
+		out["url"]             = self.gitRepository.url
+		out["branch"]          = self.branch
+		out["revision"]        = self.revision
+		out["directory"]       = self.directory
+		
+		return out
+	
+	@classmethod
+	def getAll(cls, databaseSession):
+		packageGitRepositories = databaseSession.query(cls).order_by(cls.id.desc()).all()
+		return packages
+	
+	@classmethod
+	def getByPackage(cls, databaseSession, packageId):
+		if isinstance(packageId, Base): packageId = packageId.id
+		
+		packageGitRepository = databaseSession.query(cls).filter(cls.packageId == packageId).first()
+		return packageGitRepository
