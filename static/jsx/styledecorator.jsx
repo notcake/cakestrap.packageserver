@@ -13,12 +13,19 @@ function StyleDecorator(object)
 		}
 		
 		var element = render.call(this);
+		if (!element) { return element; }
+		
 		element.props.style = Object.assign(
 			{},
 			this.props.style || {},
 			visible ? {} : { display: "none" },
 			element.props.style
 		);
+		
+		if (this.props.className)
+		{
+			element.props.className += " " + this.props.className;
+		}
 		
 		return element;
 	};
