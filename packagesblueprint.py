@@ -23,9 +23,10 @@ def PackagesBlueprint(app):
 		return flask.render_template("packages/create.html")
 	
 	@blueprint.route("/packages/create", methods = ["POST"])
-	def create_post():
+	@api.json()
+	def createPost():
 		if g.currentUser is None or not g.currentUser.canCreatePackages():
-			return app.response_class(json.dumps({ "success": False, "message": "You do not have permission to create packages." }), mimetype = "application/json")
+			return { "success": False, "message": "You do not have permission to create packages." }
 		
 		# Prepare data
 		package = Package()
@@ -33,10 +34,10 @@ def PackagesBlueprint(app):
 		package.name        = flask.request.form.get("name", "")
 		package.displayName = flask.request.form.get("displayName", "")
 		package.description = flask.request.form.get("description", "")
-		if package.name        == "": return app.response_class(json.dumps({ "success": False, "message": "You must provide a package name!", "field": "name"        }), mimetype = "application/json")
+		if package.name        == "": return { "success": False, "message": "You must provide a package name!", "field": "name"        }
 		if package.displayName == "": package.displayName = package.name
-		if package.description == "": return app.response_class(json.dumps({ "success": False, "message": "You must provide a description!",  "field": "description" }), mimetype = "application/json")
-		if Package.getByName(g.databaseSession, package.name) is not None: return app.response_class(json.dumps({ "success": False, "message": "A package with this name already exists!", "field": "name" }), mimetype = "application/json")
+		if package.description == "": return { "success": False, "message": "You must provide a description!",  "field": "description" }
+		if Package.getByName(g.databaseSession, package.name) is not None: return { "success": False, "message": "A package with this name already exists!", "field": "name" }
 		
 		repositoryUrl = flask.request.form.get("gitRepositoryUrl", "")
 		if repositoryUrl == "": repositoryUrl = None
@@ -54,7 +55,7 @@ def PackagesBlueprint(app):
 		   (packageGitRepository.branch is not None or \
 		    packageGitRepository.revision is not None or \
 		    packageGitRepository.directory != ""):
-			return app.response_class(json.dumps({ "success": False, "message": "You must provide a repository URL!",  "field": "gitRepositoryUrl" }), mimetype = "application/json")
+			return { "success": False, "message": "You must provide a repository URL!",  "field": "gitRepositoryUrl" }
 		
 		if packageGitRepository.branch is None: packageGitRepository.branch = "master"
 		
@@ -67,7 +68,7 @@ def PackagesBlueprint(app):
 		
 		g.databaseSession.commit()
 		
-		return app.response_class(json.dumps({ "success": True, "id": package.id }), mimetype = "application/json")
+		return { "success": True, "id": package.id }
 	
 	@blueprint.route("/packages/<int:packageId>.json",  defaults = { "type": "json"  })
 	@blueprint.route("/packages/<int:packageId>.jsonp", defaults = { "type": "jsonp" })
