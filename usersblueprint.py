@@ -4,6 +4,7 @@ import flask
 from flask import Blueprint
 from flask import g
 
+import api
 from models import User
 
 def UsersBlueprint(app):
@@ -17,40 +18,32 @@ def UsersBlueprint(app):
 	def all():
 		return flask.render_template("users/all.html")
 	
-	@blueprint.route("/users/<int:steamId64>.json")
-	def user_json(steamId64):
-		user = User.getBySteamId64(g.databaseSession, steamId64)
-		if user is not None: user = user.toDictionary()
-		return app.response_class(json.dumps(user), mimetype = "application/json")
+	@blueprint.route("/users/<int:steamId64>.json",  defaults = { "type": "json"  })
+	@blueprint.route("/users/<int:steamId64>.jsonp", defaults = { "type": "jsonp" })
+	@blueprint.route("/users/<int:steamId64>/user.json",  defaults = { "type": "json"  })
+	@blueprint.route("/users/<int:steamId64>/user.jsonp", defaults = { "type": "jsonp" })
+	@api.json()
+	@api.jsonp("var user = new User({});")
+	@api.map("toDictionary")
+	def userJson(steamId64, type):
+		return User.getBySteamId64(g.databaseSession, steamId64)
 	
-	@blueprint.route("/users/<int:steamId64>.jsonp")
-	def user_jsonp(steamId64):
-		user = User.getBySteamId64(g.databaseSession, steamId64)
-		if user is not None: user = user.toDictionary()
-		return app.response_class("var user = new User(" + json.dumps(user) + ");", mimetype = "application/json")
+	@blueprint.route("/users/current.json",  defaults = { "type": "json"  })
+	@blueprint.route("/users/current.jsonp", defaults = { "type": "jsonp" })
+	@api.json()
+	@api.jsonp("var currentUser = new User({});")
+	@api.map("toDictionary")
+	def currentUserJson(type):
+		return g.currentUser
 	
-	@blueprint.route("/users/current.json")
-	def current_user_json():
-		user = g.currentUser
-		if user is not None: user = user.toDictionary()
-		return app.response_class(json.dumps(user), mimetype = "application/json")
-	
-	@blueprint.route("/users/current.jsonp")
-	def current_user_jsonp():
-		user = g.currentUser
-		if user is not None: user = user.toDictionary()
-		return app.response_class("var currentUser = new User(" + json.dumps(user) + ");", mimetype = "application/json")
-	
-	@blueprint.route("/users/all.json")
-	def all_json():
-		users = User.getAll(g.databaseSession)
-		users = [ user.toDictionary() for user in users ]
-		return app.response_class(json.dumps(users), mimetype = "application/json")
-	
-	@blueprint.route("/users/all.jsonp")
-	def all_jsonp():
-		users = User.getAll(g.databaseSession)
-		users = [ user.toDictionary() for user in users ]
-		return app.response_class("var users = " + json.dumps(users) + ".map(User.Create);", mimetype = "application/json")
+	@blueprint.route("/users.json",  defaults = { "type": "json"  })
+	@blueprint.route("/users.jsonp", defaults = { "type": "jsonp" })
+	@blueprint.route("/users/all.json",  defaults = { "type": "json"  })
+	@blueprint.route("/users/all.jsonp", defaults = { "type": "jsonp" })
+	@api.json()
+	@api.jsonp("var users = {}.map(User.create);")
+	@api.mapArray("toDictionary")
+	def allJson(type):
+		return User.getAll(g.databaseSession)
 	
 	return blueprint
