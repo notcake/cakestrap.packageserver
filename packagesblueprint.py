@@ -75,7 +75,7 @@ def PackagesBlueprint(app):
 	@blueprint.route("/packages/<int:packageId>/package.json",  defaults = { "type": "json"  })
 	@blueprint.route("/packages/<int:packageId>/package.jsonp", defaults = { "type": "jsonp" })
 	@api.json()
-	@api.jsonp("var package = {};")
+	@api.jsonp("var package = new Package({});")
 	@api.map("toDictionary")
 	def packageJson(packageId, type):
 		return Package.getById(g.databaseSession, packageId)
@@ -83,7 +83,7 @@ def PackagesBlueprint(app):
 	@blueprint.route("/packages/<int:packageId>/gitrepository.json",  defaults = { "type": "json"  })
 	@blueprint.route("/packages/<int:packageId>/gitrepository.jsonp", defaults = { "type": "jsonp" })
 	@api.json()
-	@api.jsonp("var packageGitRepository = {};")
+	@api.jsonp("var packageGitRepository = new PackageGitRepository({});")
 	@api.map("toDictionary")
 	def packageGitRepositoryJson(packageId, type):
 		return PackageGitRepository.getByPackage(g.databaseSession, packageId)
@@ -99,7 +99,7 @@ def PackagesBlueprint(app):
 	@blueprint.route("/packages/all.json",  defaults = { "type": "json"  })
 	@blueprint.route("/packages/all.jsonp", defaults = { "type": "jsonp" })
 	@api.json()
-	@api.jsonp("var packages = {};")
+	@api.jsonp("var packages = {}.map(Package.create);")
 	@api.mapArray("toDictionary")
 	def allJson(type):
 		return Package.getAll(g.databaseSession)

@@ -17,11 +17,16 @@ var RankNames = {
 
 self.ctor = function(userInformation)
 {
+	this.id                      = null;
+	this.steamId64               = null;
 	this.displayName             = "Nobody";
-	this.rank                    = "user";
 	this.smallProfilePictureUrl  = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg";
 	this.mediumProfilePictureUrl = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_medium.jpg";
 	this.largeProfilePictureUrl  = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg";
+	this.rank                    = "user";
+	this.creationTimestamp       = 0;
+	this.lastLoginTimestamp      = null;
+	this.lastActivityTimestamp   = null;
 	
 	for (var k in userInformation)
 	{

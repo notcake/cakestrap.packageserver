@@ -20,10 +20,12 @@
 		{% for jsxFile in g.getJsxFileList() %}<script src="/js/{{ jsxFile[:-1] }}"></script>
 		{% endfor %}
 		
-		<script src="/js/models/user.js"></script>
 		<script src="/js/models/resultstate.js"></script>
 		<script src="/js/models/validationcontroller.js"></script>
 		<script src="/js/models/nonnullablevalidator.js"></script>
+		<script src="/js/models/user.js"></script>
+		<script src="/js/models/package.js"></script>
+		<script src="/js/models/packagegitrepository.js"></script>
 		<script src="/users/current.jsonp"></script>
 	</head>
 	<body>
