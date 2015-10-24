@@ -1,11 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
-	<script src="/packages/{{ packageId }}.jsonp"></script>
+	<script src="/packages/{{ packageId }}/package.jsonp"></script>
+	<script src="/packages/{{ packageId }}/gitrepository.jsonp"></script>
 	<script type="text/jsx">
 		$(document).ready(
 			function()
 			{
-				React.render(<PackagePage package={ package } />, $("#page-content")[0]);
+				React.render(<PackagePage package={ package } packageGitRepository={ packageGitRepository } />, $("#page-content")[0]);
 			}
 		);
 	</script>

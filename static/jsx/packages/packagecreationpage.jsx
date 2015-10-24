@@ -2,6 +2,37 @@ var PackageCreationPage = React.createClass(
 	{
 		getInitialState: function()
 		{
+			var nameValidator = new ValidationController();
+			nameValidator.setValidator(
+				function(value, validationCallback)
+				{
+					if (value == "")
+					{
+						validationCallback(false, "You must provide a package name!");
+						return;
+					}
+					
+					$.get(
+						"/packages/named.json",
+						{ name: value },
+						function(response)
+						{
+							this.setState({ validatedName: name });
+							
+							validationCallback(response == null, response != null && "A package with this name already exists!");
+						}.bind(this)
+					).fail(
+						function(jqXHR, _, error)
+						{
+							validationCallback(false, jqXHR.status + " " + error);
+						}
+					);
+				}.bind(this)
+			);
+			
+			var submissionResultState = new ResultState();
+			submissionResultState.changed.addListener(this.forceUpdate.bind(this, null));
+			
 			return {
 				name: "",
 				displayName: "",
@@ -12,9 +43,9 @@ var PackageCreationPage = React.createClass(
 				gitRevision: "",
 				gitDirectory: "",
 				
-				validatedName: "",
-				nameValid: null,
-				validatingName: false
+				nameValidator: nameValidator,
+				
+				submissionResultState: submissionResultState
 			};
 		},
 		
@@ -25,70 +56,21 @@ var PackageCreationPage = React.createClass(
 					<h2>Create Package</h2>
 					<hr />
 					<div>
-						<div className="form-group" style={ { marginBottom: "8px", whiteSpace: "nowrap" } }>
-							<FieldLabel text="Name:" style={ { color: "brown" } } />
-							<div className={ this.state.nameValid == false ? "col-md-9 has-error" : this.state.nameValid == true ? "col-md-9 has-success" : "col-md-9 " } >
-								<TextEntry ref="name" style={ { width: "100%" } } placeholder="net.minecraft.server" text={ this.state.name } onTextChanged={ this.setName } onEnter={ this.handleNameEnter } />
-							</div>
-							<div style={ { display: "inline-block" } }></div>
-							<div className={ this.state.nameValid ? "has-success" : "has-error" } style={ { display: "inline-block", padding: "4px 8px" } }>
-								<Icon icon="spinner" visible={ this.state.validatingName } />
-								<Icon icon={ this.state.nameValid ? "tick" : "cross" } visible={ !this.state.validatingName && this.state.nameValid != null } />
-								<span className="control-label" style={ { verticalAlign: "middle", marginLeft: "4px" } }>
-									{ this.state.nameValid != false ? "" : this.state.name == "" ? "You must provide a package name!" : "This package already exists!" }
-								</span>
-							</div>
-							<div style={ { clear: "both" } } />
-						</div>
-						<div className="form-group" style={ { marginBottom: "8px" } }>
-							<FieldLabel text="Display Name:" />
-							<div className="col-md-9">
-								<TextEntry ref="displayName" style={ { width: "100%" } } text={ this.state.displayName } onTextChanged={ this.setProperty.bind(this, "displayName") } onEnter={ this.handleDisplayNameEnter } />
-							</div>
-							<div style={ { clear: "both" } } />
-						</div>
-						<div className="form-group" style={ { marginBottom: "8px" } }>
-							<FieldLabel text="Description:" />
-							<div className="col-md-9">
-								<TextEntry ref="description" style={ { width: "100%" } } onTextChanged={ this.setProperty.bind(this, "description") } multiline={ true } />
-							</div>
-							<div style={ { clear: "both" } } />
-						</div>
+						<TextEntryFormRow ref="name"        validationController={ this.state.nameValidator } label="Name:"         text={ this.state.name        } placeholder="net.minecraft.server"                                                            onTextChanged={ this.setName                               } onEnter={ this.handleNameEnter        } />
+						<TextEntryFormRow ref="displayName"                                                   label="Display Name:" text={ this.state.displayName }                                    validator={ NonNullableValidator("a display name", true) } onTextChanged={ this.setProperty.bind(this, "displayName") } onEnter={ this.handleDisplayNameEnter } />
+						<TextEntryFormRow ref="description"                                                   label="Description:"  text={ this.state.description }                                    validator={ NonNullableValidator("a description",  true) } onTextChanged={ this.setProperty.bind(this, "description") } multiline={ true } />
 					</div>
 					<hr />
 					<div>
-						<div className="form-group" style={ { marginBottom: "8px" } }>
-							<FieldLabel text="Git Repository URL:" />
-							<div className="col-md-9">
-								<TextEntry ref="gitRepositoryUrl" style={ { width: "100%" } } placeholder="https://github.com/notcake/glib.git" onTextChanged={ this.setProperty.bind(this, "gitRepositoryUrl") } onEnter={ this.handleGitRepositoryUrlEnter } />
-							</div>
-							<div style={ { clear: "both" } } />
-						</div>
-						<div className="form-group" style={ { marginBottom: "8px" } }>
-							<FieldLabel text="Branch:" />
-							<div className="col-md-9">
-								<TextEntry ref="gitBranch" style={ { width: "100%" } } placeholder="master" onTextChanged={ this.setProperty.bind(this, "gitBranch") } onEnter={ this.handleGitBranchEnter } />
-							</div>
-							<div style={ { clear: "both" } } />
-						</div>
-						<div className="form-group" style={ { marginBottom: "8px" } }>
-							<FieldLabel text="Revision:" />
-							<div className="col-md-9">
-								<TextEntry ref="gitRevision" style={ { width: "100%" } } onTextChanged={ this.setProperty.bind(this, "gitRevision") } onEnter={ this.handleGitRevisionEnter } />
-							</div>
-							<div style={ { clear: "both" } } />
-						</div>
-						<div className="form-group" style={ { marginBottom: "8px" } }>
-							<FieldLabel text="Directory:" />
-							<div className="col-md-9">
-								<TextEntry ref="gitDirectory" style={ { width: "100%" } } onTextChanged={ this.setProperty.bind(this, "gitDirectory") } onEnter={ this.handleGitDirectoryEnter } />
-							</div>
-							<div style={ { clear: "both" } } />
-						</div>
+						<TextEntryFormRow ref="gitRepositoryUrl" label="Git Repository URL:" text={ this.state.gitRepositoryUrl } placeholder="https://github.com/notcake/glib.git" onTextChanged={ this.setProperty.bind(this, "gitRepositoryUrl") } onEnter={ this.handleGitRepositoryUrlEnter } />
+						<TextEntryFormRow ref="gitBranch"        label="Branch:"             text={ this.state.gitBranch        } placeholder="master"                              onTextChanged={ this.setProperty.bind(this, "gitBranch")        } onEnter={ this.handleGitBranchEnter        } />
+						<TextEntryFormRow ref="gitRevision"      label="Revision:"           text={ this.state.gitRevision      }                                                   onTextChanged={ this.setProperty.bind(this, "gitRevision")      } onEnter={ this.handleGitRevisionEnter      } />
+						<TextEntryFormRow ref="gitDirectory"     label="Directory:"          text={ this.state.gitDirectory     }                                                   onTextChanged={ this.setProperty.bind(this, "gitDirectory")     } onEnter={ this.handleGitDirectoryEnter     } />
 					</div>
 					<hr />
 					<div style={ { textAlign: "right" } }>
-						<Button icon="/static/images/silkicons/add.png" text="Create Package" onClick={ this.handleCreateClick } />
+						<ResultStatus resultState={ this.state.submissionResultState } style={ { marginRight: "4px" } } />
+						<Button icon="add" text="Create Package" onClick={ this.handleCreateClick } />
 					</div>
 				</div>
 			);
@@ -96,11 +78,6 @@ var PackageCreationPage = React.createClass(
 		
 		setName: function(name)
 		{
-			if (this.state.name == this.state.validatedName)
-			{
-				this.dispatchNameValidation();
-			}
-			
 			if (this.state.displayName == this.state.name)
 			{
 				this.setProperty("displayName", name);
@@ -114,17 +91,7 @@ var PackageCreationPage = React.createClass(
 			this.setState({ [propertyName]: propertyValue });
 		},
 		
-		handleNameEnter: function(event)
-		{
-			if (this.state.validatingName == false &&
-			    this.state.nameValid == null)
-			{
-				this.dispatchNameValidation();
-			}
-			
-			this.refs.displayName.select();
-		},
-		
+		handleNameEnter:             function(event) { this.refs.displayName.select();      },
 		handleDisplayNameEnter:      function(event) { this.refs.description.select();      },
 		handleDescriptionEnter:      function(event) { this.refs.gitRepositoryUrl.select(); },
 		handleGitRepositoryUrlEnter: function(event) { this.refs.gitBranch.select();        },
@@ -134,36 +101,49 @@ var PackageCreationPage = React.createClass(
 		
 		handleCreateClick: function(event)
 		{
-		},
-		
-		dispatchNameValidation: function()
-		{
-			this.setState({ validatingName: true })
+			if (this.state.submissionResultState.isPending()) { return; }
 			
-			setTimeout(
-				function()
+			this.refs.name.validate();
+			this.refs.displayName.validate();
+			this.refs.description.validate();
+			
+			this.refs.gitRepositoryUrl.validate();
+			this.refs.gitBranch.validate();
+			this.refs.gitRevision.validate();
+			this.refs.gitDirectory.validate();
+			
+			this.state.submissionResultState.pending();
+			
+			$.post(
+				"/packages/create",
 				{
-					var name = this.state.name;
-					$.get(
-						"/packages/named.json",
-						{ name: name },
-						function(response)
-						{
-							this.state.validatedName = name;
-							
-							if (this.state.name != this.state.validatedName)
-							{
-								this.dispatchNameValidation();
-							}
-							else
-							{
-								this.setState({ nameValid: response == null && name != "" });
-								this.setState({ validatingName: false })
-							}
-						}.bind(this)
-					);
-				}.bind(this),
-				200
+					name:             this.state.name,
+					displayName:      this.state.displayName,
+					description:      this.state.description,
+					
+					gitRepositoryUrl: this.state.gitRepositoryUrl,
+					gitBranch:        this.state.gitBranch,
+					gitRevision:      this.state.gitRevision,
+					gitDirectory:     this.state.gitDirectory
+				},
+				function(response)
+				{
+					if (response.success)
+					{
+						this.state.submissionResultState.success();
+						window.location.href = "/packages/" + response.id.toString();
+					}
+					else
+					{
+						this.state.submissionResultState.failure(response.message);
+						this.refs[response.field].select();
+					}
+				}.bind(this)
+			).fail(
+				function(jqXHR, _, error)
+				{
+					this.state.submissionResultState.failure(jqXHR.status + " " + error);
+				}.bind(this)
 			);
 		}
 	}
