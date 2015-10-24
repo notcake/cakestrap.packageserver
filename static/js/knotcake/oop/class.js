@@ -14,7 +14,7 @@ Knotcake.OOP.Class = function (methodTable, baseClass)
 	}
 	
 	instanceConstructor.prototype = methodTable;
-	instanceConstructor.Create = function()
+	instanceConstructor.create = function()
 	{
 		return new (instanceConstructor.bind.bind(instanceConstructor, instanceConstructor).apply(instanceConstructor, arguments));
 	}
