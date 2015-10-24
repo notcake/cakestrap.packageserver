@@ -5,6 +5,11 @@ sudo apt-get install gcc
 sudo apt-get install libmysqlclient-dev
 sudo apt-get install nodejs
 
+# Update git (GIT_TERMINAL_PROMPT=0 won't work pre version 2.3)
+sudo add-apt-repository ppa:git-core/ppa
+sudo apt-get update
+sudo apt-get install git
+
 virtualenv venv
 . venv/bin/activate
 	pip install flask
