@@ -10,13 +10,13 @@ var TextEntry = React.createClass(
 			if (!this.props.multiline)
 			{
 				return (
-					<input className="form-control" type="text" placeholder={ this.props.placeholder } value={ this.state.text } onChange={ this.handleChange } onKeyUp={ this.handleKeyUp } />
+					<input className="form-control" type="text" placeholder={ this.props.placeholder } value={ this.state.text } onChange={ this.handleChange } onKeyUp={ this.handleKeyUp } onBlur={ this.handleBlur } />
 				);
 			}
 			else
 			{
 				return (
-					<textarea className="form-control" placeholder={ this.props.placeholder } value={ this.state.text } onChange={ this.handleChange } onKeyUp={ this.handleKeyUp } />
+					<textarea className="form-control" placeholder={ this.props.placeholder } value={ this.state.text } onChange={ this.handleChange } onKeyUp={ this.handleKeyUp } onBlur={ this.handleBlur } />
 				);
 			}
 		},
@@ -72,6 +72,14 @@ var TextEntry = React.createClass(
 					
 					this.props.onEnter(event);
 				}
+			}
+		},
+		
+		handleBlur: function(event)
+		{
+			if (this.props.onBlur)
+			{
+				this.props.onBlur(event);
 			}
 		}
 	}
