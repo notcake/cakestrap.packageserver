@@ -57,3 +57,37 @@ h1, h2, h3, h4, h5 {
 	height: auto;
 	padding: 4px 4px;
 }
+
+.grid-view {
+	margin: -4px -4px;
+}
+
+.grid-view-item {
+	float: left;
+	/*display: inline-block;*/
+	width: 33.33333%;
+	padding: 4px 4px;
+}
+
+.list-view {
+}
+
+/*
+.list-view-item {
+}
+
+.list-view-item:not(:first-child) {
+	margin-top: 8px;
+}
+
+.list-view-item:not(:last-child) {
+	margin-bottom: 8px;
+}
+*/
+.list-view {
+	margin: -4px 0px;
+}
+
+.list-view-item {
+	padding: 4px 0px;
+}
