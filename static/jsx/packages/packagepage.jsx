@@ -10,14 +10,9 @@ var PackagePage = React.createClass(
 						<div>
 							<h2>{ this.props.package.name }</h2>
 							<hr />
-							<TextFieldRow label="Name:"         text={ this.props.package.name        } />
-							<TextFieldRow label="Display name:" text={ this.props.package.displayName } />
-							<TextFieldRow label="Description:"  text={ this.props.package.description } />
+							<PackageFieldsView item={ this.props.package } />
 							<hr />
-							<TextFieldRow label="Git Repository URL:" text={ this.props.packageGitRepository && this.props.packageGitRepository.url       } />
-							<TextFieldRow label="Branch:"             text={ this.props.packageGitRepository && this.props.packageGitRepository.branch    } />
-							<TextFieldRow label="Revision:"           text={ this.props.packageGitRepository && this.props.packageGitRepository.revision  } />
-							<TextFieldRow label="Directory:"          text={ this.props.packageGitRepository && this.props.packageGitRepository.directory } />
+							<PackageGitRepositoryFieldsView item={ this.props.packageGitRepository } />
 						</div>
 					</div>
 				</div>
