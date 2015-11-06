@@ -55,7 +55,7 @@ def PackagesBlueprint(app):
 		   (packageGitRepository.branch is not None or \
 		    packageGitRepository.revision is not None or \
 		    packageGitRepository.directory != ""):
-			return { "success": False, "message": "You must provide a repository URL!",  "field": "gitRepositoryUrl" }
+			return { "success": False, "message": "You must provide a repository URL!",  "field": "url" }
 		
 		if packageGitRepository.branch is None: packageGitRepository.branch = "master"
 		

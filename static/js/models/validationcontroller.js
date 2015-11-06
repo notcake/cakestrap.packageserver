@@ -9,7 +9,7 @@ self.ctor = function(resultState)
 	this.value = null;
 	
 	this.valueChangeSink = this.setValue.bind(this);
-	this.validator = function(value, validationCallback)
+	this.validator = function(object, value, validationCallback)
 	{
 		validationCallback(true);
 	};
@@ -62,6 +62,7 @@ self.validate = function(value)
 	this.resultState.pending();
 	var validationResultReceived = false;
 	var validationResult = this.validator(
+		this,
 		value,
 		function(valid, message)
 		{

@@ -5,7 +5,7 @@ NonNullableValidator = function(message, compact)
 		message = "You must provide " + message + "!";
 	}
 	
-	return function(value, validationCallback)
+	return function(object, value, validationCallback)
 	{
 		if (value == "")
 		{

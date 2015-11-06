@@ -4,7 +4,7 @@ var TextEntryFormRow = React.createClass(
 		{
 			return {
 				validationController: this.props.validationController || this.createValidationController(),
-				text: this.props.text
+				text: this.props.text || ""
 			};
 		},
 		
@@ -117,11 +117,11 @@ var TextEntryFormRow = React.createClass(
 		{
 			var validationController = new ValidationController();
 			validationController.setValidator(
-				function(value, validationCallback)
+				function(object, value, validationCallback)
 				{
 					if (this.props.validator)
 					{
-						return this.props.validator(value, validationCallback);
+						return this.props.validator(object, value, validationCallback);
 					}
 					
 					validationCallback(true);
