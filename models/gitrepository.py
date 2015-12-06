@@ -1,12 +1,13 @@
 import os.path
 import re
+import shutil
 import subprocess
 
 from sqlalchemy import select, func
 from sqlalchemy import Column, PrimaryKeyConstraint, ForeignKey, UniqueConstraint
 from sqlalchemy import Boolean, Integer, BigInteger, Text
 from sqlalchemy import Enum
-from sqlalchemy.orm import relationship, column_property
+from sqlalchemy.orm import relationship, column_property, reconstructor
 
 import knotcake.concurrency
 
@@ -32,12 +33,35 @@ class GitRepository(Base):
 	def __init__(self):
 		super(GitRepository, self).__init__()
 		
-		self.repositoryLock = None
+		self.init()
+	
+	@reconstructor
+	def init(self):
+		self._repositoryLock = None
 	
 	def initialize(self):
 		self.lock()
 		subprocess.call(["git", "clone", self.url, self.getFullPath()], env = { "GIT_TERMINAL_PROMPT": "0" })
 		self.unlock()
+	
+	def uninitialize(self):
+		self.lock()
+		if os.path.exists(os.path.join(self.getFullPath(), ".git")):
+			subprocess.call(["rm", "-rf", self.getFullPath()])
+		self.unlock()
+		self.deleteLock()
+	
+	def gc(self, databaseSession):
+		from packagegitrepository import PackageGitRepository
+		from packagereleasegitrepository import PackageReleaseGitRepository
+		
+		GitRepository.lockRepositoryDirectory()
+		if databaseSession.query(PackageGitRepository).with_parent(self).count() == 0 and \
+		   databaseSession.query(PackageReleaseGitRepository).with_parent(self).count() == 0:
+			self.uninitialize()
+			databaseSession.delete(self)
+			databaseSession.commit()
+		GitRepository.unlockRepositoryDirectory()
 	
 	def getFullPath(self):
 		return os.path.join(self.getRepositoryDirectoryPath(), self.directoryName)
@@ -57,22 +81,55 @@ class GitRepository(Base):
 		self.directoryName = baseDirectoryName + u"_" + unicode(n)
 		return self.directoryName
 	
-	def lock(self):
-		if self.repositoryLock is None:
+	# Locking
+	@property
+	def repositoryLock(self):
+		if self._repositoryLock is None:
 			lockPath = self.getFullPath() + ".lock"
-			self.repositoryLock = knotcake.concurrency.FileLock(lockPath)
+			self._repositoryLock = knotcake.concurrency.FileLock(lockPath)
 		
+		return self._repositoryLock
+	
+	def lock(self):
 		self.repositoryLock.lock()
 	
 	def unlock(self):
 		self.repositoryLock.unlock()
 	
+	def deleteLock(self):
+		self.repositoryLock.delete()
+	
+	@classmethod
+	def create(cls, databaseSession, url):
+		cls.lockRepositoryDirectory()
+		
+		# Acquire
+		gitRepository = cls.getByUrl(databaseSession, url)
+		if gitRepository: return gitRepository
+		
+		# Create
+		gitRepository = GitRepository()
+		gitRepository.url = url
+		gitRepository.generateDirectoryName(databaseSession)
+		
+		# Clone
+		gitRepository.initialize()
+		
+		# Commit to database
+		databaseSession.add(gitRepository)
+		databaseSession.commit()
+		cls.unlockRepositoryDirectory()
+		
+		return gitRepository
+	
+	# References
 	@classmethod
 	def addRef(cls, databaseSession, repositoryUrl, gitRepositoryDerivative):
 		databaseSession.commit()
 		
 		cls.lockRepositoryDirectory()
 		gitRepositoryDerivative.gitRepository = cls.create(databaseSession, repositoryUrl)
+		databaseSession.add(gitRepositoryDerivative)
 		databaseSession.commit()
 		cls.unlockRepositoryDirectory()
 	
@@ -119,24 +176,8 @@ class GitRepository(Base):
 		
 		return True
 	
-	@classmethod
-	def create(cls, databaseSession, url):
-		cls.lockRepositoryDirectory()
-		gitRepository = cls.getByUrl(databaseSession, url)
-		if gitRepository: return gitRepository
-		
-		gitRepository = GitRepository()
-		gitRepository.url = url
-		gitRepository.generateDirectoryName(databaseSession)
-		
-		gitRepository.initialize()
-		
-		databaseSession.add(gitRepository)
-		databaseSession.commit()
-		cls.unlockRepositoryDirectory()
-		
-		return gitRepository
-	
+	# Lock for acquiring and releasing references to GitRepositories
+	# Lock for garbage collecting GitRepositories too
 	@classmethod
 	def lockRepositoryDirectory(cls):
 		if cls.repositoryDirectoryLock is None:
