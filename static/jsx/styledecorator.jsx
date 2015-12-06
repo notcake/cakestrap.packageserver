@@ -19,6 +19,8 @@ function StyleDecorator(object)
 			{},
 			this.props.style || {},
 			visible ? {} : { display: "none" },
+			this.props.marginLeft  ? { marginLeft: this.props.marginLeft  } : {},
+			this.props.marginRight ? { marginLeft: this.props.marginRight } : {},
 			element.props.style
 		);
 		
