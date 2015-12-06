@@ -46,3 +46,6 @@ class FileLock(object):
 				self.file = None
 		finally:
 			self.mutex.release()
+	
+	def delete(self):
+		os.remove(self.path)
