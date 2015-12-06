@@ -29,10 +29,6 @@ class User(Base):
 	PrimaryKeyConstraint(id)
 	
 	def __init__(self):
-		self.init()
-	
-	@reconstructor
-	def init(self):
 		self.rank = "user"
 	
 	def isAnonymous(self):
