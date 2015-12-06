@@ -14,6 +14,7 @@ def PackagesBlueprint(app):
 	def package(packageId):
 		return flask.render_template("packages/package.html", packageId = packageId)
 	
+	@blueprint.route("/packages/")
 	@blueprint.route("/packages/all")
 	def all():
 		return flask.render_template("packages/all.html")
@@ -135,7 +136,7 @@ def PackagesBlueprint(app):
 				
 				GitRepository.addRef(g.databaseSession, repositoryUrl, destinationPackageGitRepository)
 				g.databaseSession.add(destinationPackageGitRepository)
-		else:
+		elif repositoryUrl is not None:
 			destinationPackageGitRepository.branch    = sourcePackageGitRepository.branch
 			destinationPackageGitRepository.revision  = sourcePackageGitRepository.revision
 			destinationPackageGitRepository.directory = sourcePackageGitRepository.directory
@@ -143,6 +144,25 @@ def PackagesBlueprint(app):
 		g.databaseSession.commit()
 		
 		return { "success": True, "id": destinationPackage.id }
+	
+	@blueprint.route("/packages/<int:packageId>/delete", methods = ["GET"])
+	def packageDelete(packageId):
+		return flask.render_template("packages/delete.html", packageId = packageId)
+	
+	@blueprint.route("/packages/<int:packageId>/delete", methods = ["POST"])
+	@api.json()
+	def packageDeletePost(packageId):
+		if g.currentUser is None: return api.jsonMissingActionPermissionFailure("delete packages")
+		
+		package = Package.getById(g.databaseSession, packageId)
+		
+		if package is None: return api.jsonFailure("The package does not exist or has been deleted.")
+		if not g.currentUser.canDeletePackage(package): return api.jsonMissingActionPermissionFailure("delete packages")
+		
+		package.remove(g.databaseSession)
+		g.databaseSession.commit()
+		
+		return { "success": True }
 	
 	@blueprint.route("/packages/named.json")
 	@api.json()
