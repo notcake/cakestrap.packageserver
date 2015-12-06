@@ -75,6 +75,16 @@ self.canEditPackage = function(package)
 	return this.isModerator() || package.creatorUserId == this.id;
 };
 
+self.canDeletePackages = function()
+{
+	return this.isAdministrator();
+};
+
+self.canDeletePackage = function(package)
+{
+	return this.isAdministrator();
+};
+
 self.getRankIcon = function()
 {
 	return RankIcons[this.rank];

@@ -62,6 +62,12 @@ class User(Base):
 	def canEditPackage(self, package):
 		return self.isModerator() or package.creatorUserId == self.id
 	
+	def canDeletePackages(self):
+		return self.isAdministrator()
+	
+	def canDeletePackage(self, package):
+		return self.isAdministrator()
+	
 	def toDictionary(self, out = None):
 		if out is None: out = {}
 		
