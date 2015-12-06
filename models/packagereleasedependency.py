@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship, column_property, reconstructor
 from base import Base
 
 class PackageReleaseDependency(Base):
-	__tablename__ = "package_release_dependency"
+	__tablename__ = "package_release_dependencies"
 	
 	id               = Column("id",                 BigInteger, nullable = False)
 	packageReleaseId = Column("package_release_id", BigInteger, ForeignKey("package_releases.id"), nullable = False)
