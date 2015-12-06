@@ -28,7 +28,8 @@ var PackageEditPage = React.createClass(
 					<hr />
 					<div style={ { textAlign: "right" } }>
 						<ResultStatus resultState={ this.state.submissionResultState } style={ { marginRight: "4px" } } />
-						<Button icon={ isCreation ? "add" : "disk" } text={ isCreation ? "Create" : "Save" } onClick={ this.handleSubmitClick } />
+						<Button marginLeft="8px" text={ "Cancel" } onClick={ this.handleCancelClick } />
+						<Button className="btn-primary" marginLeft="8px" icon={ isCreation ? "add" : "disk" } text={ isCreation ? "Create" : "Save" } onClick={ this.handleSubmitClick } />
 					</div>
 				</div>
 			);
@@ -36,6 +37,20 @@ var PackageEditPage = React.createClass(
 		
 		handlePackageFieldsEnter:              function(event) { this.refs.packageGitRepository.select(); },
 		handlePackageGitRepositoryFieldsEnter: function(event) { this.handleSubmitClick();                },
+		
+		handleCancelClick: function(event)
+		{
+			var isCreation = this.state.package.id == null;
+			
+			if (isCreation)
+			{
+				window.location.href = "/packages/all";
+			}
+			else
+			{
+				window.location.href = "/packages/" + this.state.package.id;
+			}
+		},
 		
 		handleSubmitClick: function(event)
 		{
