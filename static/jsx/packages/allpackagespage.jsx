@@ -12,8 +12,8 @@ var AllPackagesPage = React.createClass(
 			return (
 				<div style={ { width: "50%", margin: "8px auto" } }>
 					<div style={ { float: "right" } }>
-						<Button visible={ currentUser.canCreatePackages() } href="/packages/create" icon="add" text="Add package" />
-						<ButtonGroup style={ { marginLeft: "8px" } }>
+						<Button visible={ currentUser.canCreatePackages() } marginLeft="8px" href="/packages/create" icon="add" text="Add package" />
+						<ButtonGroup marginLeft="8px">
 							<Button icon="fa:th"   pressed={ this.state.viewMode == "grid" } onClick={ this.setViewMode.bind(this, "grid") } />
 							<Button icon="fa:list" pressed={ this.state.viewMode == "list" } onClick={ this.setViewMode.bind(this, "list") } />
 						</ButtonGroup>
