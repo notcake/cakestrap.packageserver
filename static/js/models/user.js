@@ -39,13 +39,40 @@ self.isAnonymous = function()
 	return this.id == null;
 };
 
-self.canCreatePackages = function()
+self.isModerator = function()
 {
 	if (this.rank == "moderator")     { return true; }
 	if (this.rank == "administrator") { return true; }
 	if (this.rank == "overlord")      { return true; }
-	
 	return false;
+};
+
+self.isAdministrator = function()
+{
+	if (this.rank == "administrator") { return true; }
+	if (this.rank == "overlord")      { return true; }
+	return false;
+};
+
+self.isOverlord = function()
+{
+	if (this.rank == "overlord")      { return true; }
+	return false;
+};
+
+self.canCreatePackages = function()
+{
+	return this.isModerator();
+};
+
+self.canEditPackages = function()
+{
+	return this.isModerator();
+};
+
+self.canEditPackage = function(package)
+{
+	return this.isModerator() || package.creatorUserId == this.id;
 };
 
 self.getRankIcon = function()

@@ -34,12 +34,29 @@ class User(Base):
 	def isAnonymous(self):
 		return self.id is None
 	
-	def canCreatePackages(self):
+	def isModerator(self):
 		if self.rank == "moderator":     return True
 		if self.rank == "administrator": return True
 		if self.rank == "overlord":      return True
-		
 		return False
+	
+	def isAdministrator(self):
+		if self.rank == "administrator": return True
+		if self.rank == "overlord":      return True
+		return False
+	
+	def isOverlord(self):
+		if self.rank == "overlord":      return True
+		return False
+	
+	def canCreatePackages(self):
+		return self.isModerator()
+	
+	def canEditPackages(self):
+		return self.isModerator()
+		
+	def canEditPackage(self, package):
+		return self.isModerator() or package.creatorUserId == self.id
 	
 	def toDictionary(self, out = None):
 		if out is None: out = {}
