@@ -16,8 +16,8 @@ class PackageRelease(Base):
 	fileName         = Column("file_name",         Text,       nullable = False)
 	
 	package          = relationship("Package",                     uselist = False)
-	gitRepository    = relationship("PackageReleaseGitRepository", uselist = False)
-	dependencies     = relationship("PackageReleaseDependency",    uselist = True)
+	gitRepository    = relationship("PackageReleaseGitRepository", uselist = False, cascade="delete")
+	dependencies     = relationship("PackageReleaseDependency",    uselist = True,  cascade="delete")
 	
 	PrimaryKeyConstraint(id)
 	UniqueConstraint(packageId, versionTimestamp)

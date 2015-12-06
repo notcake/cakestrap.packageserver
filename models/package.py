@@ -16,14 +16,16 @@ class Package(Base):
 	creatorUserId = Column("creator_user_id", BigInteger, ForeignKey("users.id"), nullable = False)
 	
 	creatorUser   = relationship("User",                 uselist = False)
-	gitRepository = relationship("PackageGitRepository", uselist = False)
-	dependencies  = relationship("PackageDependency",    uselist = True)
-	releases      = relationship("PackageRelease",       uselist = True)
+	gitRepository = relationship("PackageGitRepository", uselist = False, cascade="delete")
+	dependencies  = relationship("PackageDependency",    uselist = True,  cascade="delete")
+	releases      = relationship("PackageRelease",       uselist = True,  cascade="delete")
 	
 	PrimaryKeyConstraint(id)
 	
 	def remove(self, databaseSession):
-		from gitrepository import GitRepository
+		from gitrepository               import GitRepository
+		from packagereleasegitrepository import PackageReleaseGitRepository
+		from packagerelease              import PackageRelease
 		
 		gitRepository = None
 		if self.gitRepository is not None:
@@ -32,10 +34,14 @@ class Package(Base):
 		gitRepositories = databaseSession \
 			.query(GitRepository) \
 			.join(GitRepository.packageReleaseGitRepositories) \
-			.join(PackageReleaseGitRepositories.packageRelease) \
+			.join(PackageReleaseGitRepository.packageRelease) \
 			.filter(PackageRelease.package == self)
 		
-		gitRepository.gc(databaseSession)
+		databaseSession.delete(self)
+		databaseSession.commit()
+		
+		if gitRepository is not None:
+			gitRepository.gc(databaseSession)
 		
 		for gitRepository in gitRepositories:
 			gitRepository.gc(databaseSession)
