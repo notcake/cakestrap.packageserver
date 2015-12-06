@@ -75,3 +75,9 @@ def jsonp(expression):
 		return jsonp
 	
 	return jsonp
+
+def jsonFailure(message):
+	return { "success": False, "message": message }
+
+def jsonMissingActionPermissionFailure(actionDisplayName):
+	return jsonFailure("You do not have permission to " + actionDisplayName + ".")
