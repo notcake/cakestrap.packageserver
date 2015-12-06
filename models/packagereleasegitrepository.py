@@ -19,3 +19,9 @@ class PackageReleaseGitRepository(Base):
 	gitRepository    = relationship("GitRepository",  uselist = False)
 	
 	PrimaryKeyConstraint(packageReleaseId)
+	
+	def remove(self, databaseSession):
+		from gitrepository import GitRepository
+		gitRepository = self.gitRepository
+		GitRepository.release(databaseSession, self)
+		gitRepository.gc(databaseSession)
