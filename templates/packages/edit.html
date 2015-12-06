@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+	<script src="/packages/{{ packageId }}/package.jsonp"></script>
+	<script src="/packages/{{ packageId }}/gitrepository.jsonp"></script>
+	<script type="text/jsx">
+		$(document).ready(
+			function()
+			{
+				React.render(<PackageEditPage package={ package } packageGitRepository={ packageGitRepository } />, $("#page-content")[0]);
+			}
+		);
+	</script>
+	
+	<div id="page-content"></div>
+{% endblock %}

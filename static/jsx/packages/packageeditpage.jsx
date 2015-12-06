@@ -1,4 +1,4 @@
-var PackageCreationPage = React.createClass(
+var PackageEditPage = React.createClass(
 	{
 		getInitialState: function()
 		{
@@ -6,8 +6,8 @@ var PackageCreationPage = React.createClass(
 			submissionResultState.changed.addListener(this.forceUpdate.bind(this, null));
 			
 			return {
-				package: new Package(),
-				packageGitRepository: new PackageGitRepository(),
+				package: this.props.package || new Package(),
+				packageGitRepository: this.props.packageGitRepository || new PackageGitRepository(),
 				
 				submissionResultState: submissionResultState
 			};
@@ -15,9 +15,12 @@ var PackageCreationPage = React.createClass(
 		
 		render: function()
 		{
+			var isCreation = this.state.package.id == null;
+			var verb = isCreation ? "Create" : "Edit";
+		
 			return (
 				<div style={ { width: "50%", margin: "8px auto" } }>
-					<h2>Create Package</h2>
+					<h2>{ verb + " Package" }</h2>
 					<hr />
 					<PackageFieldsEditor ref="package" item={ this.state.package } onEnter={ this.handlePackageFieldsEnter } />
 					<hr />
@@ -25,18 +28,20 @@ var PackageCreationPage = React.createClass(
 					<hr />
 					<div style={ { textAlign: "right" } }>
 						<ResultStatus resultState={ this.state.submissionResultState } style={ { marginRight: "4px" } } />
-						<Button icon="add" text="Create Package" onClick={ this.handleCreateClick } />
+						<Button icon={ isCreation ? "add" : "disk" } text={ isCreation ? "Create" : "Save" } onClick={ this.handleSubmitClick } />
 					</div>
 				</div>
 			);
 		},
 		
 		handlePackageFieldsEnter:              function(event) { this.refs.packageGitRepository.select(); },
-		handlePackageGitRepositoryFieldsEnter: function(event) { this.handleCreateClick();                },
+		handlePackageGitRepositoryFieldsEnter: function(event) { this.handleSubmitClick();                },
 		
-		handleCreateClick: function(event)
+		handleSubmitClick: function(event)
 		{
 			if (this.state.submissionResultState.isPending()) { return; }
+			
+			var isCreation = this.state.package.id == null;
 			
 			this.refs.package.validate();
 			this.refs.packageGitRepository.validate();
@@ -44,8 +49,9 @@ var PackageCreationPage = React.createClass(
 			this.state.submissionResultState.pending();
 			
 			$.post(
-				"/packages/create",
+				"/packages/" + (isCreation ? "create" : (this.state.package.id + "/edit")),
 				{
+					id:               this.state.package.id,
 					name:             this.state.package.name,
 					displayName:      this.state.package.displayName,
 					description:      this.state.package.description,

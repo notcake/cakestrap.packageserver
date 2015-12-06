@@ -22,54 +22,6 @@ def PackagesBlueprint(app):
 	def create():
 		return flask.render_template("packages/create.html")
 	
-	@blueprint.route("/packages/create", methods = ["POST"])
-	@api.json()
-	def createPost():
-		if g.currentUser is None or not g.currentUser.canCreatePackages():
-			return { "success": False, "message": "You do not have permission to create packages." }
-		
-		# Prepare data
-		package = Package()
-		package.creatorUser = g.currentUser
-		package.name        = flask.request.form.get("name", "")
-		package.displayName = flask.request.form.get("displayName", "")
-		package.description = flask.request.form.get("description", "")
-		if package.name        == "": return { "success": False, "message": "You must provide a package name!", "field": "name"        }
-		if package.displayName == "": package.displayName = package.name
-		if package.description == "": return { "success": False, "message": "You must provide a description!",  "field": "description" }
-		if Package.getByName(g.databaseSession, package.name) is not None: return { "success": False, "message": "A package with this name already exists!", "field": "name" }
-		
-		repositoryUrl = flask.request.form.get("gitRepositoryUrl", "")
-		if repositoryUrl == "": repositoryUrl = None
-		
-		# Prepare data
-		packageGitRepository = PackageGitRepository()
-		packageGitRepository.package       = package
-		packageGitRepository.branch        = flask.request.form.get("gitBranch",    "")
-		packageGitRepository.revision      = flask.request.form.get("gitRevision",  "")
-		packageGitRepository.directory     = flask.request.form.get("gitDirectory", "")
-		if packageGitRepository.branch   == "": packageGitRepository.branch   = None
-		if packageGitRepository.revision == "": packageGitRepository.revision = None
-		
-		if repositoryUrl is None and \
-		   (packageGitRepository.branch is not None or \
-		    packageGitRepository.revision is not None or \
-		    packageGitRepository.directory != ""):
-			return { "success": False, "message": "You must provide a repository URL!",  "field": "url" }
-		
-		if packageGitRepository.branch is None: packageGitRepository.branch = "master"
-		
-		# Begin committing changes
-		g.databaseSession.add(package)
-		
-		if repositoryUrl is not None:
-			GitRepository.addRef(g.databaseSession, repositoryUrl, packageGitRepository)
-			g.databaseSession.add(packageGitRepository)
-		
-		g.databaseSession.commit()
-		
-		return { "success": True, "id": package.id }
-	
 	@blueprint.route("/packages/<int:packageId>.json",  defaults = { "type": "json"  })
 	@blueprint.route("/packages/<int:packageId>.jsonp", defaults = { "type": "jsonp" })
 	@blueprint.route("/packages/<int:packageId>/package.json",  defaults = { "type": "json"  })
@@ -87,6 +39,107 @@ def PackagesBlueprint(app):
 	@api.map("toDictionary")
 	def packageGitRepositoryJson(packageId, type):
 		return PackageGitRepository.getByPackage(g.databaseSession, packageId)
+	
+	@blueprint.route("/packages/<int:packageId>/edit", methods = ["GET"])
+	def packageEdit(packageId):
+		return flask.render_template("packages/edit.html", packageId = packageId)
+	
+	@blueprint.route("/packages/create", methods = ["POST"], defaults = { "packageId": None })
+	@blueprint.route("/packages/<int:packageId>/edit", methods = ["POST"])
+	@api.json()
+	def packageEditPost(packageId):
+		id = flask.request.form.get("id")
+		
+		# Verify permissions
+		if id is None:
+			if g.currentUser is None: return api.jsonMissingActionPermissionFailure("create packages")
+		else:
+			if g.currentUser is None: return api.jsonMissingActionPermissionFailure("edit packages")
+		
+		destinationPackage = Package.getById(g.databaseSession, id)
+		
+		if id is None:
+			if not g.currentUser.canCreatePackages(): return api.jsonMissingActionPermissionFailure("create packages")
+		else:
+			if destinationPackage is None: return api.jsonFailure("The package does not exist or has been deleted.")
+			if not g.currentUser.canEditPackage(destinationPackage): return api.jsonMissingActionPermissionFailure("edit packages")
+		
+		destinationPackageGitRepository = PackageGitRepository.getByPackage(g.databaseSession, destinationPackage)
+		
+		# Read Package
+		sourcePackage = Package()
+		sourcePackage.name        = flask.request.form.get("name", "")
+		sourcePackage.displayName = flask.request.form.get("displayName", "")
+		sourcePackage.description = flask.request.form.get("description", "")
+		
+		# Read PackageGitRepository
+		sourcePackageGitRepository = PackageGitRepository()
+		sourcePackageGitRepository.package       = destinationPackage
+		sourcePackageGitRepository.branch        = flask.request.form.get("gitBranch",    "")
+		sourcePackageGitRepository.revision      = flask.request.form.get("gitRevision",  "")
+		sourcePackageGitRepository.directory     = flask.request.form.get("gitDirectory", "")
+		
+		# Validate Package
+		if sourcePackage.name        == "": return { "success": False, "message": "You must provide a package name!", "field": "name"        }
+		if sourcePackage.displayName == "": sourcePackage.displayName = sourcePackage.name
+		if sourcePackage.description == "": return { "success": False, "message": "You must provide a description!",  "field": "description" }
+		
+		namedPackage = Package.getByName(g.databaseSession, sourcePackage.name)
+		if namedPackage is not None and namedPackage != destinationPackage: return { "success": False, "message": "A package with this name already exists!", "field": "name" }
+		
+		# Validate PackageGitRepository
+		if sourcePackageGitRepository.branch   == "": sourcePackageGitRepository.branch   = None
+		if sourcePackageGitRepository.revision == "": sourcePackageGitRepository.revision = None
+		
+		repositoryUrl = flask.request.form.get("gitRepositoryUrl", "")
+		if repositoryUrl == "": repositoryUrl = None
+		
+		previousRepositoryUrl = None
+		if destinationPackageGitRepository is not None:
+			previousRepositoryUrl = destinationPackageGitRepository.gitRepository.url
+		
+		if repositoryUrl is None and \
+		   (sourcePackageGitRepository.branch is not None or \
+		    sourcePackageGitRepository.revision is not None or \
+		    sourcePackageGitRepository.directory != ""):
+			return { "success": False, "message": "You must provide a repository URL!",  "field": "url" }
+		
+		if sourcePackageGitRepository.branch is None: sourcePackageGitRepository.branch = "master"
+		
+		# Commit Package
+		if id is None: destinationPackage.creatorUser = g.currentUser
+		destinationPackage.name        = sourcePackage.name
+		destinationPackage.displayName = sourcePackage.displayName
+		destinationPackage.description = sourcePackage.description
+		
+		if destinationPackage.id is None:
+			g.databaseSession.add(destinationPackage)
+		
+		# Commit PackageGitRepository
+		if previousRepositoryUrl != repositoryUrl:
+			if destinationPackageGitRepository is not None:
+				destinationPackageGitRepository.remove(g.databaseSession)
+				destinationPackageGitRepository = None
+			
+			if destinationPackageGitRepository is None:
+				destinationPackageGitRepository = PackageGitRepository()
+				destinationPackageGitRepository.package   = sourcePackageGitRepository.package
+			
+			if repositoryUrl is not None:
+				destinationPackageGitRepository.branch    = sourcePackageGitRepository.branch
+				destinationPackageGitRepository.revision  = sourcePackageGitRepository.revision
+				destinationPackageGitRepository.directory = sourcePackageGitRepository.directory
+				
+				GitRepository.addRef(g.databaseSession, repositoryUrl, destinationPackageGitRepository)
+				g.databaseSession.add(destinationPackageGitRepository)
+		else:
+			destinationPackageGitRepository.branch    = sourcePackageGitRepository.branch
+			destinationPackageGitRepository.revision  = sourcePackageGitRepository.revision
+			destinationPackageGitRepository.directory = sourcePackageGitRepository.directory
+		
+		g.databaseSession.commit()
+		
+		return { "success": True, "id": destinationPackage.id }
 	
 	@blueprint.route("/packages/named.json")
 	@api.json()
