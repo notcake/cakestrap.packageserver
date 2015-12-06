@@ -22,6 +22,24 @@ class Package(Base):
 	
 	PrimaryKeyConstraint(id)
 	
+	def remove(self, databaseSession):
+		from gitrepository import GitRepository
+		
+		gitRepository = None
+		if self.gitRepository is not None:
+			gitRepository = self.gitRepository.gitRepository
+		
+		gitRepositories = databaseSession \
+			.query(GitRepository) \
+			.join(GitRepository.packageReleaseGitRepositories) \
+			.join(PackageReleaseGitRepositories.packageRelease) \
+			.filter(PackageRelease.package == self)
+		
+		gitRepository.gc(databaseSession)
+		
+		for gitRepository in gitRepositories:
+			gitRepository.gc(databaseSession)
+	
 	def toDictionary(self, out = None):
 		if out is None: out = {}
 		
@@ -40,6 +58,7 @@ class Package(Base):
 	
 	@classmethod
 	def getById(cls, databaseSession, id):
+		if id is None: return None
 		package = databaseSession.query(cls).filter(cls.id == id).first()
 		return package
 	
