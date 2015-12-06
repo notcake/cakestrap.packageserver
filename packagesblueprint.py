@@ -49,6 +49,7 @@ def PackagesBlueprint(app):
 	@api.json()
 	def packageEditPost(packageId):
 		id = flask.request.form.get("id")
+		if id == "": id = None
 		
 		# Verify permissions
 		if id is None:
@@ -60,6 +61,8 @@ def PackagesBlueprint(app):
 		
 		if id is None:
 			if not g.currentUser.canCreatePackages(): return api.jsonMissingActionPermissionFailure("create packages")
+			
+			destinationPackage = Package()
 		else:
 			if destinationPackage is None: return api.jsonFailure("The package does not exist or has been deleted.")
 			if not g.currentUser.canEditPackage(destinationPackage): return api.jsonMissingActionPermissionFailure("edit packages")
