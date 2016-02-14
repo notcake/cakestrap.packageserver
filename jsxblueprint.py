@@ -15,8 +15,9 @@ def JSXBlueprint(app):
 	@blueprint.route("/js/<path:path>")
 	def js(path):
 		path = os.path.normpath(path)
-		if path.startswith("../"):
+		if path.startswith("../") or os.path.isabs(path):
 			flask.abort(404)
+			return
 		
 		# Unprocessed .js files
 		inputPath = app.config["Path"] + "/static/js/" + path
