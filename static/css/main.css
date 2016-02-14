@@ -91,3 +91,11 @@ h1, h2, h3, h4, h5 {
 .list-view-item {
 	padding: 4px 0px;
 }
+
+.colored-box {
+	background-color: aliceblue;
+}
+
+.striped:nth-of-type(even) {
+	background-color: rgba(0, 0, 0, 0.03);
+}
