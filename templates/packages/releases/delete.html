@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body %}
+	<script src="/packages/{{ packageId }}/package.jsonp"></script>
+	<script src="/packages/{{ packageId }}/releases/{{ packageReleaseId }}.jsonp"></script>
+	<script>var returnPage = {{ returnPage | json }};</script>
+	<script type="text/jsx">
+		$(document).ready(
+			function()
+			{
+				React.render(<PackageReleaseDeletionPage package={ package } packageRelease={ packageRelease } />, $("#page-content")[0]);
+			}
+		);
+	</script>
+	
+	<div id="page-content"></div>
+{% endblock %}
