@@ -1,7 +1,8 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Cakestrap Packages</title>
+		<title>Packages</title>
+		<link rel="icon" type="image/png" href="{{ url_for("static", filename = "images/steam/emoticons/roar.png") }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/thirdparty/bootstrap/bootstrap.min.css") }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/thirdparty/fontawesome/font-awesome.min.css") }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename = "css/thirdparty/googlefonts/opensans.css") }}">
@@ -17,13 +18,18 @@
 		<script src="/js/knotcake/oop/class.js"></script>
 		<script src="/js/knotcake/oop/event.js"></script>
 		<script src="/js/knotcake/oop/field.js"></script>
+		<script src="/js/knotcake/web.js"></script>
 		
 		<script src="/js/models/resultstate.js"></script>
 		<script src="/js/models/validationcontroller.js"></script>
 		<script src="/js/models/nonnullablevalidator.js"></script>
+		
 		<script src="/js/models/user.js"></script>
 		<script src="/js/models/package.js"></script>
-		<script src="/js/models/packagegitrepository.js"></script>
+		<script src="/js/models/packagerelease.js"></script>
+		<script src="/js/models/directorytree.js"></script>
+		<script src="/js/models/gitrepositorytree.js"></script>
+		<script src="/js/models/svnrepositorytree.js"></script>
 		
 		{% for jsxFile in g.getJsxFileList() %}<script src="/js/{{ jsxFile[:-1] }}"></script>
 		{% endfor %}
