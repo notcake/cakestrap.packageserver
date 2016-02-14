@@ -24,8 +24,6 @@ var PackagePage = React.createClass(
 					<hr />
 					<ContentBox>
 						<div>
-							<h2>{ this.props.package.name }</h2>
-							<hr />
 							<PackageFieldsView item={ this.props.package } />
 							<hr />
 							<b>Code:</b>
