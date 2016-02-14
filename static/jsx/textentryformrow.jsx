@@ -30,7 +30,7 @@ var TextEntryFormRow = React.createClass(
 		{
 			if (this.props.text != nextProps.text)
 			{
-				this.setState({ text: nextProps.text});
+				this.setText(nextProps.text);
 			}
 			
 			if (this.props.validationController != nextProps.validationController)
@@ -42,6 +42,14 @@ var TextEntryFormRow = React.createClass(
 		componentWillUpdate: function(nextProps, nextState)
 		{
 			this.handleValidationControllerChanged(this.state.validationController, nextState.validationController);
+			
+			if (this.state.text != nextState.text)
+			{
+				if (this.props.onTextChanged)
+				{
+					this.props.onTextChanged(nextState.text);
+				}
+			}
 		},
 		
 		componentWillUnmount: function()
@@ -59,6 +67,11 @@ var TextEntryFormRow = React.createClass(
 			this.refs.textentry.select();
 		},
 		
+		setText: function(text)
+		{
+			this.setState({ text: text });
+		},
+		
 		validate: function(text)
 		{
 			if (text == null)
@@ -71,13 +84,8 @@ var TextEntryFormRow = React.createClass(
 		
 		handleTextChanged: function(text)
 		{
-			this.setState({ text: text });
+			this.setText(text);
 			this.validate(text);
-			
-			if (this.props.onTextChanged)
-			{
-				this.props.onTextChanged(text);
-			}
 		},
 		
 		handleEnter: function(text)

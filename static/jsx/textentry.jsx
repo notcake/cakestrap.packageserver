@@ -25,7 +25,18 @@ var TextEntry = React.createClass(
 		{
 			if (this.props.text != nextProps.text)
 			{
-				this.setState({ text: nextProps.text });
+				this.setText(nextProps.text);
+			}
+		},
+		
+		componentWillUpdate: function(nextProps, nextState)
+		{
+			if (this.state.text != nextState.text)
+			{
+				if (this.props.onTextChanged)
+				{
+					this.props.onTextChanged(nextState.text);
+				}
 			}
 		},
 		
@@ -37,6 +48,11 @@ var TextEntry = React.createClass(
 		select: function()
 		{
 			React.findDOMNode(this).select();
+		},
+		
+		setText: function(text)
+		{
+			this.setState({ text: text });
 		},
 		
 		handleClick: function(event)
@@ -54,12 +70,7 @@ var TextEntry = React.createClass(
 		
 		handleChange: function(event)
 		{
-			this.setState({ text: event.target.value });
-			
-			if (this.props.onTextChanged)
-			{
-				this.props.onTextChanged(event.target.value);
-			}
+			this.setText(event.target.value);
 		},
 		
 		handleKeyUp: function(event)
