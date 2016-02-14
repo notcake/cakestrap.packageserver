@@ -29,7 +29,7 @@ var PackageDeletionPage = React.createClass(
 		
 		handleCancelClick: function(event)
 		{
-			window.location.href = "/packages/" + this.props.package.id;
+			window.location.href = this.props.package.getBasePath();
 		},
 		
 		handleDeleteClick: function(event)
@@ -38,9 +38,9 @@ var PackageDeletionPage = React.createClass(
 			
 			this.state.submissionResultState.pending();
 			
-			$.post(
-				"/packages/" + this.props.package.id + "/delete",
-				{},
+			Knotcake.Web.Post(
+				this.props.package.getBasePath() + "/delete",
+				null,
 				function(response)
 				{
 					if (response.success)
@@ -52,8 +52,7 @@ var PackageDeletionPage = React.createClass(
 					{
 						this.state.submissionResultState.failure(response.message);
 					}
-				}.bind(this)
-			).fail(
+				}.bind(this),
 				function(jqXHR, _, error)
 				{
 					this.state.submissionResultState.failure(jqXHR.status + " " + error);

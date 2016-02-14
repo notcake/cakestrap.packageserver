@@ -12,7 +12,7 @@ var packageFields = [
 					return;
 				}
 				
-				$.get(
+				Knotcake.Web.Get(
 					"/packages/named.json",
 					{ name: value },
 					function(response)
@@ -21,8 +21,7 @@ var packageFields = [
 						if (response.id == package.id) { validationCallback(true); return; }
 						
 						validationCallback(false, "A package with this name already exists!");
-					}
-				).fail(
+					},
 					function(jqXHR, _, error)
 					{
 						validationCallback(false, jqXHR.status + " " + error);

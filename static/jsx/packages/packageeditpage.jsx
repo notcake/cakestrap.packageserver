@@ -5,9 +5,12 @@ var PackageEditPage = React.createClass(
 			var submissionResultState = new ResultState();
 			submissionResultState.changed.addListener(this.forceUpdate.bind(this, null));
 			
+			var package = this.props.package || new Package();
+			
 			return {
-				package: this.props.package || new Package(),
-				packageGitRepository: this.props.packageGitRepository || new PackageGitRepository(),
+				package:                package,
+				codeDirectoryTree:      package.codeDirectoryTree      || new DirectoryTree(),
+				resourcesDirectoryTree: package.resourcesDirectoryTree || new DirectoryTree(),
 				
 				submissionResultState: submissionResultState
 			};
@@ -24,7 +27,11 @@ var PackageEditPage = React.createClass(
 					<hr />
 					<PackageFieldsEditor ref="package" item={ this.state.package } onEnter={ this.handlePackageFieldsEnter } />
 					<hr />
-					<PackageGitRepositoryFieldsEditor ref="packageGitRepository" item={ this.state.packageGitRepository } onEnter={ this.handlePackageGitRepositoryFieldsEnter } />
+					<b>Code:</b>
+					<DirectoryTreeFieldsEditor ref="codeDirectoryTree"      item={ this.state.codeDirectoryTree      } onEnter={ this.handleCodeDirectoryTreeFieldsEnter      } />
+					<hr />
+					<b>Resources:</b>
+					<DirectoryTreeFieldsEditor ref="resourcesDirectoryTree" item={ this.state.resourcesDirectoryTree } onEnter={ this.handleResourcesDirectoryTreeFieldsEnter }/>
 					<hr />
 					<div style={ { textAlign: "right" } }>
 						<ResultStatus resultState={ this.state.submissionResultState } style={ { marginRight: "4px" } } />
@@ -35,8 +42,9 @@ var PackageEditPage = React.createClass(
 			);
 		},
 		
-		handlePackageFieldsEnter:              function(event) { this.refs.packageGitRepository.select(); },
-		handlePackageGitRepositoryFieldsEnter: function(event) { this.handleSubmitClick();                },
+		handlePackageFieldsEnter:                function(event) { this.refs.codeDirectoryTree.select();      },
+		handleCodeDirectoryTreeFieldsEnter:      function(event) { this.refs.resourcesDirectoryTree.select(); },
+		handleResourcesDirectoryTreeFieldsEnter: function(event) { this.handleSubmitClick();                  },
 		
 		handleCancelClick: function(event)
 		{
@@ -48,7 +56,7 @@ var PackageEditPage = React.createClass(
 			}
 			else
 			{
-				window.location.href = "/packages/" + this.state.package.id;
+				window.location.href = this.state.package.getBasePath();
 			}
 		},
 		
@@ -59,22 +67,17 @@ var PackageEditPage = React.createClass(
 			var isCreation = this.state.package.id == null;
 			
 			this.refs.package.validate();
-			this.refs.packageGitRepository.validate();
+			this.refs.codeDirectoryTree.validate();
+			this.refs.resourcesDirectoryTree.validate();
 			
 			this.state.submissionResultState.pending();
 			
-			$.post(
-				"/packages/" + (isCreation ? "create" : (this.state.package.id + "/edit")),
+			Knotcake.Web.Post(
+				isCreation ? "/packages/create" : (this.state.package.getBasePath() + "/edit"),
 				{
-					id:               this.state.package.id,
-					name:             this.state.package.name,
-					displayName:      this.state.package.displayName,
-					description:      this.state.package.description,
-					
-					gitRepositoryUrl: this.state.packageGitRepository.url,
-					gitBranch:        this.state.packageGitRepository.branch,
-					gitRevision:      this.state.packageGitRepository.revision,
-					gitDirectory:     this.state.packageGitRepository.directory
+					package:                this.state.package,
+					codeDirectoryTree:      this.state.codeDirectoryTree,
+					resourcesDirectoryTree: this.state.resourcesDirectoryTree
 				},
 				function(response)
 				{
@@ -87,10 +90,10 @@ var PackageEditPage = React.createClass(
 					{
 						this.state.submissionResultState.failure(response.message);
 						this.refs.package.select(response.field);
-						this.refs.packageGitRepository.select(response.field);
+						this.refs.codeDirectoryTree.select(response.field);
+						this.refs.resourcesDirectoryTree.select(response.field);
 					}
-				}.bind(this)
-			).fail(
+				}.bind(this),
 				function(jqXHR, _, error)
 				{
 					this.state.submissionResultState.failure(jqXHR.status + " " + error);
