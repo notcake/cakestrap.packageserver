@@ -34,6 +34,11 @@ self.ctor = function(userInformation)
 	}
 };
 
+self.getBasePath = function()
+{
+	return "/users/" + this.steamId64;
+};
+
 self.isAnonymous = function()
 {
 	return this.id == null;
@@ -84,6 +89,16 @@ self.canDeletePackage = function(package)
 {
 	return this.isAdministrator();
 };
+
+self.canCreatePackageRelease = function(package)
+{
+	return this.canEditPackage(package);
+}
+
+self.canDeletePackageRelease = function(package, packageRelease)
+{
+	return this.canEditPackage(package);
+}
 
 self.getRankIcon = function()
 {
