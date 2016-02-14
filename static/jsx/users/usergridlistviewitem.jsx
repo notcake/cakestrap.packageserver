@@ -3,9 +3,9 @@ var UserGridListViewItem = React.createClass(
 		render: function()
 		{
 			return (
-				<div key={ this.props.item.id } style={ { backgroundColor: "beige" } }>
-					<a className="block" href={ "/users/" + this.props.item.steamId64 } style={ { display: "block", overflow: "auto", width: "100%", padding: "8px" } }>
-						<div className="col-md-4" style={ { width: "auto", marginRight: "8px" } }>
+				<ColoredBox key={ this.props.item.id }>
+					<a className="block" href={ this.props.item.getBasePath() } style={ { display: "block", overflow: "auto", width: "100%", padding: "8px" } }>
+						<div style={ { float: "left", marginRight: "8px" } }>
 							<img src={ this.props.item.mediumProfilePictureUrl } style={ { width: "48px", height: "48px", borderRadius: "3px" } } />
 						</div>
 						<div style={ { float: "left", margin: "0px 0px" } }>
@@ -16,7 +16,7 @@ var UserGridListViewItem = React.createClass(
 							</span>
 						</div>
 					</a>
-				</div>
+				</ColoredBox>
 			);
 		}
 	}
