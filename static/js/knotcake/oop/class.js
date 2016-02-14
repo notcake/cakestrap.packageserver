@@ -1,7 +1,7 @@
 var Knotcake = Knotcake || {}
 Knotcake.OOP = Knotcake.OOP || {}
 
-Knotcake.OOP.Class = function (methodTable, baseClass)
+Knotcake.OOP.Class = function(methodTable, baseClass)
 {
 	var instanceConstructor = function()
 	{
