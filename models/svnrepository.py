@@ -11,24 +11,24 @@ import knotcake.concurrency
 
 from repository import Repository
 
-class GitRepository(Repository):
-	__tablename__   = "git_repositories"
+class SvnRepository(Repository):
+	__tablename__   = "svn_repositories"
 	
 	id              = Column("id",             BigInteger, nullable = False)
 	url             = Column("url",            Text,       nullable = False)
 	directoryName   = Column("directory_name", Text,       nullable = False)
 	
-	repositoryTrees = relationship("GitRepositoryTree", uselist = True)
+	repositoryTrees = relationship("SvnRepositoryTree", uselist = True)
 	
 	PrimaryKeyConstraint(id)
 	UniqueConstraint(url)
 	UniqueConstraint(directoryName)
 	
-	repositoryDirectoryName     = "git"
-	repositoryDirectoryLockName = "git"
+	repositoryDirectoryName     = "svn"
+	repositoryDirectoryLockName = "svn"
 	
 	def __init__(self):
-		super(GitRepository, self).__init__()
+		super(SvnRepository, self).__init__()
 		
 		self.init()
 	
@@ -36,9 +36,7 @@ class GitRepository(Repository):
 	def getHeadRevision(self, repositoryTree):
 		if not self.lockDirectory(): return None
 		
-		subprocess.call(["git", "checkout", repositoryTree.branch], cwd = self.getFullPath())
-		subprocess.call(["git", "pull"], cwd = self.getFullPath())
-		revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd = self.getFullPath())
+		revision = subprocess.check_output(["svnversion"], cwd = self.getFullPath())
 		
 		self.unlockDirectory()
 		
@@ -48,12 +46,12 @@ class GitRepository(Repository):
 	# Internal
 	@property
 	def repositoryTreeClass(self):
-		from gitrepositorytree import GitRepositoryTree
-		return GitRepositoryTree
+		from svnrepositorytree import SvnRepositoryTree
+		return SvnRepositoryTree
 	
 	def initialize(self):
 		self.repositoryLock.lock()
-		subprocess.call(["git", "clone", self.url, self.getFullPath()], env = { "GIT_TERMINAL_PROMPT": "0" })
+		subprocess.call(["svn", "clone", self.url, self.getFullPath()], env = { "GIT_TERMINAL_PROMPT": "0" })
 		self.repositoryLock.unlock()
 	
 	def uninitialize(self):
@@ -65,9 +63,9 @@ class GitRepository(Repository):
 		self.repositoryLock.delete()
 	
 	def directoryExists(self):
-		return os.path.exists(os.path.join(self.getFullPath(), ".git"))
-
-	# GitRepository
+		return os.path.exists(os.path.join(self.getFullPath(), ".svn"))
+	
+	# SvnRepository
 	def lockRevision(self, gitRepositoryTree):
 		directoryPath = os.path.normpath(gitRepositoryTree.directory)
 		if directoryPath.startswith("../") or os.path.isabs(directoryPath):
@@ -79,9 +77,8 @@ class GitRepository(Repository):
 		
 		revision = gitRepositoryTree.revision
 		if revision is None: revision = "HEAD"
-		subprocess.call(["git", "reset", "--hard"], cwd = repositoryPath)
-		subprocess.call(["git", "checkout", gitRepositoryTree.branch], cwd = repositoryPath)
-		subprocess.call(["git", "checkout", revision], cwd = repositoryPath)
+		
+		subprocess.call(["svn", "update", "-r", revision], cwd = repositoryPath)
 		
 		return os.path.join(repositoryPath, directoryPath)
 	

@@ -86,11 +86,6 @@ class User(Base):
 		return users
 	
 	@classmethod
-	def getById(cls, databaseSession, id):
-		user = databaseSession.query(cls).filter(cls.id == id).first()
-		return user
-	
-	@classmethod
 	def getBySteamId64(cls, databaseSession, steamId64):
 		user = databaseSession.query(cls).filter(cls.steamId64 == steamId64).first()
 		return user
