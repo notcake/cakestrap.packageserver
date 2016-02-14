@@ -1,8 +1,8 @@
-var Knotcake = Knotcake || {}
-Knotcake.OOP = Knotcake.OOP || {}
+var Knotcake = Knotcake || {};
+Knotcake.OOP = Knotcake.OOP || {};
 
-var self = {}
-Knotcake.OOP.Field = Knotcake.OOP.Class(self)
+var self = {};
+Knotcake.OOP.Field = Knotcake.OOP.Class(self);
 
 Knotcake.OOP.Field.NextInstanceId = 0;
 

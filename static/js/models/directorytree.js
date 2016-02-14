@@ -1,5 +1,5 @@
 var self = {};
-var DirectoryTree = Knotcake.OOP.Class(self)
+var DirectoryTree = Knotcake.OOP.Class(self);
 
 self.ctor = function(directoryTreeInformation)
 {

@@ -1,5 +1,5 @@
 var self = {};
-var SvnRepositoryTree = Knotcake.OOP.Class(self)
+var SvnRepositoryTree = Knotcake.OOP.Class(self);
 
 self.ctor = function(svnRepositoryTreeInformation)
 {

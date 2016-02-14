@@ -1,5 +1,5 @@
 var self = {};
-var Package = Knotcake.OOP.Class(self)
+var Package = Knotcake.OOP.Class(self);
 
 self.ctor = function(packageInformation)
 {

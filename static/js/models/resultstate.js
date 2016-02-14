@@ -1,5 +1,5 @@
 var self = {};
-var ResultState = Knotcake.OOP.Class(self)
+var ResultState = Knotcake.OOP.Class(self);
 
 self.ctor = function()
 {

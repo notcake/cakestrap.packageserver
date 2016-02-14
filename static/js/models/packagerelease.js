@@ -1,5 +1,5 @@
 var self = {};
-var PackageRelease = Knotcake.OOP.Class(self)
+var PackageRelease = Knotcake.OOP.Class(self);
 
 self.ctor = function(packageReleaseInformation)
 {

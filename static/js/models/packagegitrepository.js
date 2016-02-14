@@ -1,5 +1,5 @@
 var self = {};
-var PackageGitRepository = Knotcake.OOP.Class(self)
+var PackageGitRepository = Knotcake.OOP.Class(self);
 
 self.ctor = function(packageGitRepositoryInformation)
 {

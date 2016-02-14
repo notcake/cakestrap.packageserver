@@ -1,5 +1,5 @@
-var Knotcake = Knotcake || {}
-Knotcake.Web = Knotcake.Web || {}
+var Knotcake = Knotcake || {};
+Knotcake.Web = Knotcake.Web || {};
 
 Knotcake.Web.Get = function(url, parameters, successCallback, failureCallback)
 {
@@ -11,7 +11,7 @@ Knotcake.Web.Get = function(url, parameters, successCallback, failureCallback)
 			success: successCallback
 		}
 	).fail(failureCallback);
-}
+};
 
 Knotcake.Web.Post = function(url, json, successCallback, failureCallback)
 {
@@ -24,4 +24,4 @@ Knotcake.Web.Post = function(url, json, successCallback, failureCallback)
 			success:     successCallback
 		}
 	).fail(failureCallback);
-}
+};

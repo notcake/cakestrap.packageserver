@@ -1,5 +1,5 @@
 var self = {};
-var GitRepositoryTree = Knotcake.OOP.Class(self)
+var GitRepositoryTree = Knotcake.OOP.Class(self);
 
 self.ctor = function(gitRepositoryTreeInformation)
 {

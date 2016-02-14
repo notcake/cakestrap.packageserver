@@ -1,5 +1,5 @@
 var self = {};
-var ValidationController = Knotcake.OOP.Class(self)
+var ValidationController = Knotcake.OOP.Class(self);
 
 self.ctor = function(resultState)
 {

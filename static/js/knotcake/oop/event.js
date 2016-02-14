@@ -1,8 +1,8 @@
-var Knotcake = Knotcake || {}
-Knotcake.OOP = Knotcake.OOP || {}
+var Knotcake = Knotcake || {};
+Knotcake.OOP = Knotcake.OOP || {};
 
-var self = {}
-Knotcake.OOP.Event = Knotcake.OOP.Class(self)
+var self = {};
+Knotcake.OOP.Event = Knotcake.OOP.Class(self);
 
 self.ctor = function()
 {

@@ -1,5 +1,5 @@
 var self = {};
-var User = Knotcake.OOP.Class(self)
+var User = Knotcake.OOP.Class(self);
 
 var RankIcons = {
 	user:          "/static/images/silkicons/user.png",
@@ -10,8 +10,8 @@ var RankIcons = {
 
 var RankNames = {
 	user:          "Peasant Scrub",
-	moderator:     "Moderator",
-	administrator: "Thought Police",
+	moderator:     "Thought Police",
+	administrator: "Lizard Person",
 	overlord:      "Reptilian Overlord"
 };
 
