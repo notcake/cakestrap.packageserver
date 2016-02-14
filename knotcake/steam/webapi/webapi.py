@@ -1,9 +1,11 @@
 import json
 import requests
 
+import knotcake.oop
+
 from user import User
 
-class WebApi(object):
+class WebApi(knotcake.oop.Object):
 	def __init__(self, apiKey):
 		self.apiKey = apiKey
 		

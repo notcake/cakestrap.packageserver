@@ -2,13 +2,20 @@ import fcntl
 import os
 import threading
 
-class FileLock(object):
+import knotcake.oop
+
+class FileLock(knotcake.oop.Object):
 	def __init__(self, path):
 		self.path   = path
 		self.thread = threading.current_thread()
 		
 		self.mutex  = threading.Lock()
 		self.count  = 0
+	
+	@property
+	def acquired(self):
+		return (self.count > 0 and
+		        self.thread == threading.current_thread())
 	
 	def lock(self, name = u""):
 		assert(self.thread == threading.current_thread())

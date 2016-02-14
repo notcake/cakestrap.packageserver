@@ -1,4 +1,6 @@
-class User(object):
+import knotcake.oop
+
+class User(knotcake.oop.Object):
 	def __init__(self):
 		self.steamId64 = None
 		self.displayName = None

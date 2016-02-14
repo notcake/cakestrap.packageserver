@@ -3,9 +3,11 @@ import re
 import urllib
 import urllib3
 
+import knotcake.oop
+
 httpPoolManager = urllib3.PoolManager(cert_reqs = "CERT_REQUIRED", ca_certs = certifi.where())
 
-class OpenId(object):
+class OpenId(knotcake.oop.Object):
 	def __init__(self):
 		self.localIdentity = None
 		self.returnUrl     = None
