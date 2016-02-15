@@ -13,6 +13,7 @@ var FieldsView = React.createClass(
 					if (this.props.item)
 					{
 						var fieldValue = this.props.item[field.getName()];
+						text = fieldValue;
 						if (field.getProperty("formatter"))
 						{
 							text = field.getProperty("formatter")(this.props.item, fieldValue);
