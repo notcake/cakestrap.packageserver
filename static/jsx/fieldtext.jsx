@@ -9,8 +9,11 @@ var FieldText = React.createClass(
 			return (
 				<FieldContent style={ { padding: "5px 0px" } }>
 					<span {...props} ref="text">
-						{ this.props.text != null ? this.props.text : <Note text={ this.props.placeholder || "None" } /> }
+						{ this.props.text != null ? this.props.text : <Placeholder text={ this.props.placeholder || "None" } /> }
 					</span>
+					{
+						this.props.note != null ? <Placeholder text={ " (" + this.props.note + ")" } /> : null
+					}
 				</FieldContent>
 			);
 		}

@@ -1,4 +1,4 @@
-var Note = React.createClass(
+var Placeholder = React.createClass(
 	{
 		render: function()
 		{
@@ -12,4 +12,4 @@ var Note = React.createClass(
 	}
 );
 
-Note = StyleDecorator(Note);
+Placeholder = StyleDecorator(Placeholder);

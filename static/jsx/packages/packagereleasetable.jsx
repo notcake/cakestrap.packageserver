@@ -7,7 +7,7 @@ var PackageReleaseTable = React.createClass(
 			{
 				return (
 					<ContentBox>
-						<Note text="There have been no package releases" />
+						<Placeholder text="There have been no package releases" />
 					</ContentBox>
 				);
 			}

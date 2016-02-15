@@ -20,7 +20,7 @@ var PackagePage = React.createClass(
 						<Button marginLeft="8px" visible={ currentUser.canDeletePackage(this.props.package) } href={ this.props.package.getBasePath() + "/delete" } icon="delete" text="Delete" />
 						<Button marginLeft="8px" visible={ currentUser.canEditPackage(this.props.package)   } href={ this.props.package.getBasePath() + "/edit"   } icon="pencil" text="Edit" />
 					</div>
-					<h2>{ this.props.package.displayName || <Note text="None" /> }</h2>
+					<h2>{ this.props.package.displayName || <Placeholder text="None" /> }</h2>
 					<hr />
 					<ContentBox>
 						<div>

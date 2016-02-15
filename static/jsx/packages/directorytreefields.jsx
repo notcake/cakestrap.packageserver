@@ -10,7 +10,7 @@ var DirectoryTreeFieldsView = React.createClass(
 				case "svn":  content = <SvnRepositoryTreeFieldsView item={ this.props.item } />; break;
 				case "git":  content = <GitRepositoryTreeFieldsView item={ this.props.item } />; break;
 				case "raw":  content = null; break;
-				case "none": content = <Note text="None" />; break;
+				case "none": content = <Placeholder text="None" />; break;
 				default:     content = null; break;
 			}
 			
