@@ -7,11 +7,29 @@ var FieldsView = React.createClass(
 			this.props.fields.forEach(
 				function(field)
 				{
+					var text = null;
+					var note = null;
+					
+					if (this.props.item)
+					{
+						var fieldValue = this.props.item[field.getName()];
+						if (field.getProperty("formatter"))
+						{
+							text = field.getProperty("formatter")(this.props.item, fieldValue);
+						}
+						
+						if (field.getProperty("noteFormatter"))
+						{
+							note = field.getProperty("noteFormatter")(this.props.item, fieldValue);
+						}
+					}
+					
 					fields.push(
 						<TextFieldRow
 							ref={ field.getName() }
 							label={ field.getProperty("label") }
-							text={ this.props.item && this.props.item[field.getName()] }
+							text={ text }
+							note={ note }
 						/>
 					);
 				}.bind(this)

@@ -12,7 +12,7 @@ var FieldText = React.createClass(
 						{ this.props.text != null ? this.props.text : <Placeholder text={ this.props.placeholder || "None" } /> }
 					</span>
 					{
-						this.props.note != null ? <Placeholder text={ " (" + this.props.note + ")" } /> : null
+						this.props.note != null ? <Note text={ this.props.note } /> : null
 					}
 				</FieldContent>
 			);
