@@ -50,7 +50,7 @@ class Package(Base):
 		packageRelease.package                = self
 		packageRelease.versionTimestamp       = timestamp
 		packageRelease.versionName            = datetime.utcfromtimestamp(timestamp).date().isoformat()
-		packageRelease.fileName               = PathUtils.createFileName(self.name) + "-" + packageRelease.versionName
+		packageRelease.fileName               = PathUtils.createFileName(self.name) + "-" + packageRelease.versionName + "-" + ("%08x" % packageRelease.versionTimestamp)
 		packageRelease.codeDirectoryTree      = codeDirectoryTree
 		packageRelease.resourcesDirectoryTree = resourcesDirectoryTree
 		

@@ -51,7 +51,7 @@ class PackageRelease(Base):
 	
 	def getFullFileName(self):
 		from pathutils import PathUtils
-		return PathUtils.createFileName(self.package.name) + "-" + self.fileName + ".bin"
+		return self.fileName + ".bin"
 	
 	def remove(self, databaseSession):
 		garbageCollectables = set()
