@@ -4,6 +4,8 @@ from streamreader import StreamReader
 
 class FileInStream(StreamReader):
 	def __init__(self, file):
+		super(FileInStreamn, self).__init__()
+		
 		self.file = file
 	
 	# IBaseStream

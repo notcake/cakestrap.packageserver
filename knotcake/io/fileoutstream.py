@@ -6,6 +6,8 @@ from streamwriter import StreamWriter
 
 class FileOutStream(StreamWriter):
 	def __init__(self, file):
+		super(FileOutStream, self).__init__()
+		
 		self.file = file
 	
 	# IBaseStream
