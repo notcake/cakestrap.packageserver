@@ -54,6 +54,8 @@ class PackageRelease(Base):
 		return self.fileName + ".bin"
 	
 	def remove(self, databaseSession):
+		self.removeFile()
+		
 		garbageCollectables = set()
 		if self.codeDirectoryTree      is not None: garbageCollectables.add(self.codeDirectoryTree.garbageCollectable)
 		if self.resourcesDirectoryTree is not None: garbageCollectables.add(self.resourcesDirectoryTree.garbageCollectable)
@@ -66,6 +68,9 @@ class PackageRelease(Base):
 		
 		for garbageCollectable in garbageCollectables:
 			garbageCollectable.gc(databaseSession)
+	
+	def removeFile(self):
+		os.remove(self.getFullFileName())
 	
 	def toDictionary(self, out = None):
 		if out is None: out = {}

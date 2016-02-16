@@ -74,6 +74,7 @@ class Package(Base):
 		for packageRelease in self.releases:
 			if packageRelease.codeDirectoryTree      is not None: garbageCollectables.add(packageRelease.codeDirectoryTree.garbageCollectable)
 			if packageRelease.resourcesDirectoryTree is not None: garbageCollectables.add(packageRelease.resourcesDirectoryTree.garbageCollectable)
+			packageRelease.removeFile()
 		
 		if None in garbageCollectables:
 			garbageCollectables.remove(None)
