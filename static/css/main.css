@@ -25,6 +25,10 @@ hr {
 	display: inline-block;
 }
 
+a, a:hover, a:focus, a:visited, a:active {
+	text-decoration: none;
+}
+
 a.block {
 	display: inline-block;
 	text-decoration: none;
