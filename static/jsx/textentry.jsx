@@ -2,7 +2,7 @@ var TextEntry = React.createClass(
 	{
 		getInitialState: function()
 		{
-			return { text: this.props.text || "" }
+			return { text: this.props.text || "" };
 		},
 		
 		render: function()
