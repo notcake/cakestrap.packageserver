@@ -30,6 +30,10 @@ class IRepository(Base):
 	@abstract
 	def getHeadRevision(self, repositoryTree): pass
 	
+	@property
+	@abstract
+	def redactedUrl(self): pass
+	
 	# Static
 	@classmethod
 	@abstract

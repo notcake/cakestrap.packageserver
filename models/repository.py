@@ -42,6 +42,10 @@ class Repository(IRepository):
 	def getFullPath(self):
 		return os.path.join(self.getRepositoryDirectoryPath(), self.directoryName)
 	
+	@property
+	def redactedUrl(self):
+		return re.sub(r"/[^/:@]*(:[^/:@]*)?@", u"/", self.url)
+	
 	# Static
 	@classmethod
 	def create(cls, databaseSession, url):
@@ -54,7 +58,7 @@ class Repository(IRepository):
 		# Create
 		repository = cls()
 		repository.url = url
-		repository.directoryName = cls.generateDirectoryName(databaseSession, repository.url)
+		repository.directoryName = cls.generateDirectoryName(databaseSession, repository)
 		
 		# Clone
 		repository.initialize()
@@ -137,12 +141,12 @@ class Repository(IRepository):
 		return cls.repositoryDirectoryPath
 	
 	@classmethod
-	def generateDirectoryName(cls, databaseSession, url):
+	def generateDirectoryName(cls, databaseSession, repository):
 		from pathutils import PathUtils
 		
 		assert(cls.getRepositoryDirectoryLock().acquired)
 		
-		baseDirectoryName = re.sub(r"/[^:@]*(:[^@]*)?@", u"/", url)
+		baseDirectoryName = repository.redactedUrl
 		baseDirectoryName = PathUtils.createFileName(baseDirectoryName)
 		baseDirectoryName = baseDirectoryName.lower()
 		if cls.isDirectoryNameFree(databaseSession, baseDirectoryName):
@@ -177,4 +181,3 @@ class Repository(IRepository):
 			cls.repositoryDirectoryLock = knotcake.concurrency.FileLock(lockPath)
 		
 		return cls.repositoryDirectoryLock
-	
