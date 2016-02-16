@@ -13,6 +13,20 @@ Knotcake.Web.Get = function(url, parameters, successCallback, failureCallback)
 	).fail(failureCallback);
 };
 
+Knotcake.Web.GetBinary = function(url, parameters, successCallback, failureCallback)
+{
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", url, true);
+	xhr.responseType = "blob";
+	
+	xhr.onload = function(event)
+	{
+		successCallback(xhr.response, "success", xhr);
+	};
+	
+	xhr.send();
+};
+
 Knotcake.Web.Post = function(url, json, successCallback, failureCallback)
 {
 	$.ajax(
