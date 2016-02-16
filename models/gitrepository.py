@@ -39,6 +39,7 @@ class GitRepository(Repository):
 		subprocess.call(["git", "checkout", repositoryTree.branch], cwd = self.getFullPath())
 		subprocess.call(["git", "pull"], cwd = self.getFullPath())
 		revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd = self.getFullPath())
+		revision = revision.strip()
 		
 		self.unlockDirectory()
 		
