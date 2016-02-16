@@ -54,7 +54,7 @@ class Repository(IRepository):
 		# Create
 		repository = cls()
 		repository.url = url
-		repository.directoryName = cls.generateDirectoryName(databaseSession)
+		repository.directoryName = cls.generateDirectoryName(databaseSession, repository.url)
 		
 		# Clone
 		repository.initialize()
