@@ -37,12 +37,20 @@ self.getTimestamp = function()
 
 self.toShortLocalTimeString = function()
 {
-	return this.date.getHours() + ":" + this.date.getMinutes();
+	var hours   = this.date.getHours().toString();
+	var minutes = this.date.getMinutes().toString();
+	if (hours.length   < 2) { hours   = "0" + hours;   }
+	if (minutes.length < 2) { minutes = "0" + minutes; }
+	
+	return hours + ":" + minutes;
 };
 
 self.toLongLocalTimeString = function()
 {
-	return this.toShortLocalTimeString() + ":" + this.date.getSeconds();
+	var seconds = this.date.getSeconds().toString();
+	if (seconds.length < 2) { seconds = "0" + seconds; }
+	
+	return this.toShortLocalTimeString() + ":" + seconds;
 };
 
 self.toLongLocalString = function()
