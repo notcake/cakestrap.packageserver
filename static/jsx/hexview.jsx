@@ -47,7 +47,10 @@ var HexView = React.createClass(
 					
 					if (i % bytesPerLine != 0)
 					{
-						if (i % 4 == 0 && i > 0) { hex = " " + hex; }
+						if (i % 4 == 0 && i > 0)
+						{
+							hex = " " + hex;
+						}
 					}
 					hexLine += " " + hex;
 					
