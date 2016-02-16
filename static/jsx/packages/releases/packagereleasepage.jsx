@@ -9,7 +9,9 @@ var PackageReleasePage = React.createClass(
 						<Button marginLeft="8px" visible={ currentUser.canDeletePackageRelease(this.props.package, this.props.packageRelease) } href={ this.props.packageRelease.getBasePath() + "/delete?returnPage=packageRelease" } icon="delete" text="Delete" />
 					</div>
 					<h2>
-						{ this.props.package.displayName || <Placeholder text="None" /> }
+						<a href={ this.props.package.getBasePath() }>
+							{ this.props.package.displayName || <Placeholder text="None" /> }
+						</a>
 						{ " Version " }
 						{ this.props.packageRelease.versionName || <Placeholder text="None" /> }
 					</h2>
