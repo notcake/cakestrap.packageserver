@@ -94,12 +94,12 @@ class DirectoryTree(IDirectoryTree):
 		
 		return self
 	
-	def toDictionary(self, out = None):
+	def toDictionary(self, showProtectedInformation, out = None):
 		if out is None: out = {}
 		
-		if self.type == "svn":   out = self.svnRepositoryTree.toDictionary(out)
-		elif self.type == "git": out = self.gitRepositoryTree.toDictionary(out)
-		elif self.type == "raw": out = self.rawDirectoryTree.toDictionary(out)
+		if self.type == "svn":   out = self.svnRepositoryTree.toDictionary(showProtectedInformation, out)
+		elif self.type == "git": out = self.gitRepositoryTree.toDictionary(showProtectedInformation, out)
+		elif self.type == "raw": out = self.rawDirectoryTree.toDictionary(showProtectedInformation, out)
 		
 		out["type"]                = self.type
 		out["svnRepositoryTreeId"] = str(self.svnRepositoryTreeId)
@@ -110,11 +110,11 @@ class DirectoryTree(IDirectoryTree):
 	
 	def lockDirectory(self):
 		if self.directoryTree is None: return None
-		return self.directoryTree.lock()
+		return self.directoryTree.lockDirectory()
 	
 	def unlockDirectory(self):
 		if self.directoryTree is None: return None
-		return self.directoryTree.lock()
+		return self.directoryTree.unlockDirectory()
 	
 	# Static
 	@classmethod
@@ -185,8 +185,8 @@ class DirectoryTree(IDirectoryTree):
 			self.gitRepositoryTree = destinationGitRepositoryTree
 			databaseSession.add(self.gitRepositoryTree)
 	
-	def toDictionaryRecursive(self, out = None):
-		return self.toDictionary(out)
+	def toDictionaryRecursive(self, showProtectedInformation, out = None):
+		return self.toDictionary(showProtectedInformation, out)
 	
 	# Internal
 	@directoryTree.setter

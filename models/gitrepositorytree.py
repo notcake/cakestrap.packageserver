@@ -47,8 +47,8 @@ class GitRepositoryTree(RepositoryTree):
 		
 		return self
 	
-	def toDictionary(self, out = None):
-		out = super(GitRepositoryTree, self).toDictionary(out)
+	def toDictionary(self, showProtectedInformation, out = None):
+		out = super(GitRepositoryTree, self).toDictionary(showProtectedInformation, out)
 		
 		out["branch"] = self.branch
 		

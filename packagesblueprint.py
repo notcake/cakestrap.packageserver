@@ -39,9 +39,10 @@ def PackagesBlueprint(app):
 	@blueprint.route("/packages/<int:packageId>/package.jsonp", defaults = { "type": "jsonp" })
 	@api.json()
 	@api.jsonp("var package = new Package({});")
-	@api.map("toDictionaryRecursive")
 	def packageJson(packageId, type):
-		return Package.getById(g.databaseSession, packageId)
+		package = Package.getById(g.databaseSession, packageId)
+		if package is None: return None
+		return package.toDictionaryRecursive(g.currentUser == package.creatorUser)
 	
 	@blueprint.route("/packages/<int:packageId>/edit", methods = ["GET"])
 	def packageEdit(packageId):

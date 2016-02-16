@@ -16,7 +16,7 @@ def PackageReleasesBlueprint(app):
 	@blueprint.route("/packages/<int:packageId>/releases/all.jsonp", defaults = { "type": "jsonp" })
 	@api.json()
 	@api.jsonp("var packageReleases = {}.map(PackageRelease.create);")
-	@api.mapArray("toDictionaryRecursive")
+	@api.mapArray("toDictionary")
 	def packageReleasesJson(packageId, type):
 		package = Package.getById(g.databaseSession, packageId)
 		if package is None: return []
@@ -29,9 +29,11 @@ def PackageReleasesBlueprint(app):
 	@blueprint.route("/packages/<int:packageId>/releases/<int:packageReleaseId>/release.jsonp", defaults = { "type": "jsonp" })
 	@api.json()
 	@api.jsonp("var packageRelease = new PackageRelease({});")
-	@api.map("toDictionaryRecursive")
 	def packageReleaseJson(packageId, packageReleaseId, type):
-		return PackageRelease.getById(g.databaseSession, packageReleaseId)
+		packageRelease = PackageRelease.getById(g.databaseSession, packageReleaseId)
+		if packageRelease is None: return None
+		
+		return packageRelease.toDictionaryRecursive(g.currentUser == packageRelease.package.creatorUser)
 	
 	@blueprint.route("/packages/<int:packageId>/releases/create", methods = ["POST"])
 	@api.json()

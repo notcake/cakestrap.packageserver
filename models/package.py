@@ -120,17 +120,17 @@ class Package(Base):
 		
 		return out
 	
-	def toDictionaryRecursive(self, out = None):
+	def toDictionaryRecursive(self, showProtectedInformation, out = None):
 		out = self.toDictionary(out)
 		
 		out["codeDirectoryTree"]      = None
 		out["resourcesDirectoryTree"] = None
 		
 		if self.codeDirectoryTree is not None:
-			out["codeDirectoryTree"] = self.codeDirectoryTree.toDictionaryRecursive()
+			out["codeDirectoryTree"] = self.codeDirectoryTree.toDictionaryRecursive(showProtectedInformation)
 		
 		if self.resourcesDirectoryTree is not None:
-			out["resourcesDirectoryTree"] = self.resourcesDirectoryTree.toDictionaryRecursive()
+			out["resourcesDirectoryTree"] = self.resourcesDirectoryTree.toDictionaryRecursive(showProtectedInformation)
 		
 		return out
 	

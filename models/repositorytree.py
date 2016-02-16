@@ -68,12 +68,16 @@ class RepositoryTree(IRepositoryTree):
 		
 		return self
 	
-	def toDictionary(self, out = None):
+	def toDictionary(self, showProtectedInformation, out = None):
 		if out is None: out = {}
 		
 		out["id"]           = str(self.id)
 		out["repositoryId"] = str(self.repositoryId)
-		out["url"]          = self.repository.url
+		if showProtectedInformation:
+			out["url"]          = self.repository.url
+		else:
+			out["url"]          = self.repository.redactedUrl
+		
 		out["revision"]     = self.revision
 		out["directory"]    = self.directory
 		

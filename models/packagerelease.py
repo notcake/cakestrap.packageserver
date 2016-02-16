@@ -6,6 +6,8 @@ from sqlalchemy import Boolean, Integer, BigInteger, Text
 from sqlalchemy import Enum
 from sqlalchemy.orm import relationship, column_property, reconstructor
 
+import knotcake.packages
+
 from base import Base
 
 class PackageRelease(Base):
@@ -28,12 +30,28 @@ class PackageRelease(Base):
 	UniqueConstraint(packageId, versionTimestamp)
 	
 	def generatePackage(self):
-		fullFilePath = self.getFullFilePath()
-		if os.path.exists(fullFilePath): return fullFilePath
+		import knotcake.io
 		
-		# help what do i put here
+		fullFilePath = self.getFullFilePath()
+		# if os.path.exists(fullFilePath): return fullFilePath
+		
+		streamWriter = knotcake.io.FileOutStream(open(fullFilePath, "wb"))
+		packageRelease = knotcake.packages.PackageRelease(self.package, self)
+		
+		codeSection      = knotcake.packages.FileSystemSection.fromDirectoryTree(self.codeDirectoryTree)
+		resourcesSection = knotcake.packages.FileSystemSection.fromDirectoryTree(self.resourcesDirectoryTree)
+		
+		packageRelease.addSection(codeSection,      "code")
+		packageRelease.addSection(resourcesSection, "resources")
+		
+		packageRelease.serialize(streamWriter)
+		streamWriter.close()
 		
 		return fullFilePath
+	
+	def getFullFileName(self):
+		from pathutils import PathUtils
+		return PathUtils.createFileName(self.package.name) + "-" + self.fileName + ".bin"
 	
 	def remove(self, databaseSession):
 		garbageCollectables = set()
@@ -62,27 +80,23 @@ class PackageRelease(Base):
 		
 		return out
 	
-	def toDictionaryRecursive(self, out = None):
+	def toDictionaryRecursive(self, showProtectedInformation, out = None):
 		out = self.toDictionary(out)
 		
 		out["codeDirectoryTree"]      = None
 		out["resourcesDirectoryTree"] = None
 		
 		if self.codeDirectoryTree is not None:
-			out["codeDirectoryTree"] = self.codeDirectoryTree.toDictionaryRecursive()
+			out["codeDirectoryTree"] = self.codeDirectoryTree.toDictionaryRecursive(showProtectedInformation)
 		
 		if self.resourcesDirectoryTree is not None:
-			out["resourcesDirectoryTree"] = self.resourcesDirectoryTree.toDictionaryRecursive()
+			out["resourcesDirectoryTree"] = self.resourcesDirectoryTree.toDictionaryRecursive(showProtectedInformation)
 		
 		return out
 	
 	# Internal
-	def getFullFileName(self):
-		from pathutils import PathUtils
-		return PathUtils.createFileName(self.package.name) + "-" + self.fileName + ".bin"
-	
 	def getFullFilePath(self):
-		return os.path.join(self.getPackageReleaseDirectory(), self.getFullFileName())
+		return os.path.join(self.getPackageReleasesDirectory(), self.getFullFileName())
 	
 	# Static
 	# Internal
