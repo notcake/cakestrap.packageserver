@@ -30,6 +30,7 @@ var FieldsView = React.createClass(
 							ref={ field.getName() }
 							label={ field.getProperty("label") }
 							text={ text }
+							multiline={ field.getProperty("multiline") }
 							note={ note }
 						/>
 					);

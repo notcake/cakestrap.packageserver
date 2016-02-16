@@ -8,7 +8,7 @@ var FieldText = React.createClass(
 			
 			return (
 				<FieldContent style={ { padding: "5px 0px" } }>
-					<span {...props} ref="text">
+					<span {...props} ref="text" style={ { whiteSpace: this.props.multiline ? "pre-line" : "normal" } }>
 						{ this.props.text != null ? this.props.text : <Placeholder text={ this.props.placeholder || "None" } /> }
 					</span>
 					{
