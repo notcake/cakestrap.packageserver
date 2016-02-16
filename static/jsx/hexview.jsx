@@ -55,7 +55,8 @@ var HexView = React.createClass(
 					hexLine += " " + hex;
 					
 					// ASCII
-					if (32 <= uint8Array[i] && uint8Array[i] < 127)
+					if ((0x20 <= uint8Array[i] && uint8Array[i] < 0x7F) ||
+					    (0xA1 <= uint8Array[i] && uint8Array[i] <= 0xFF))
 					{
 						var c = String.fromCodePoint(uint8Array[i]);
 						if (c == "&") { c = "&amp;"; }
