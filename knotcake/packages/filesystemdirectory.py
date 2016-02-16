@@ -46,6 +46,8 @@ class FileSystemDirectory(FileSystemNode):
 		
 		childNames = os.listdir(path)
 		for childName in childNames:
+			if childName.startswith("."): continue
+			
 			childPath = os.path.join(path, childName)
 			childNode = None
 			if os.path.isdir(childPath):
