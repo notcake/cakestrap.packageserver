@@ -86,6 +86,8 @@ class PackageRelease(Base):
 		out["codeDirectoryTreeId"]      = self.codeDirectoryTreeId
 		out["resourcesDirectoryTreeId"] = self.resourcesDirectoryTreeId
 		
+		out["downloadUrl"]              = "/packages/" + str(self.packageId) + "/releases/" + str(self.id) + "/download"
+		
 		return out
 	
 	def toDictionaryRecursive(self, showProtectedInformation, out = None):
