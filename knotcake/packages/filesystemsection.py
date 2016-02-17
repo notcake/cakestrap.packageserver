@@ -1,3 +1,5 @@
+import os.path
+
 from section import Section
 
 class FileSystemSection(Section):
@@ -5,6 +7,8 @@ class FileSystemSection(Section):
 		from filesystemdirectory import FileSystemDirectory
 		
 		super(FileSystemSection, self).__init__()
+		
+		self._type = "filesystem"
 		
 		self.rootDirectory = FileSystemDirectory()
 		
@@ -20,7 +24,12 @@ class FileSystemSection(Section):
 			if path is not None:
 				unlockRequired = True
 				
-				self.rootDirectory.assimilate(path)
+				if os.path.isfile(path):
+					extension = os.path.splitext(path)[1]
+					file = self.rootDirectory.createFile("_ctor" + extension)
+					file.assimilate(path)
+				else:
+					self.rootDirectory.assimilate(path)
 		
 		self.rootDirectory.serialize(streamWriter)
 		
@@ -35,11 +44,12 @@ class FileSystemSection(Section):
 	# Section
 	@property
 	def type(self):
-		return "filesystem"
+		return self._type
 	
 	# FileSystemSection
 	@classmethod
-	def fromDirectoryTree(cls, directoryTree):
+	def fromDirectoryTree(cls, directoryTree, type):
 		fileSystemSection = cls()
+		fileSystemSection._type = type
 		fileSystemSection.directoryTree = directoryTree
 		return fileSystemSection

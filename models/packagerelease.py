@@ -41,8 +41,8 @@ class PackageRelease(Base):
 		streamWriter = knotcake.io.FileOutStream(open(fullFilePath, "wb"))
 		packageRelease = knotcake.packages.PackageRelease(self.package, self)
 		
-		codeSection      = knotcake.packages.FileSystemSection.fromDirectoryTree(self.codeDirectoryTree)
-		resourcesSection = knotcake.packages.FileSystemSection.fromDirectoryTree(self.resourcesDirectoryTree)
+		codeSection      = knotcake.packages.FileSystemSection.fromDirectoryTree(self.codeDirectoryTree, "code")
+		resourcesSection = knotcake.packages.FileSystemSection.fromDirectoryTree(self.resourcesDirectoryTree, "resources")
 		
 		packageRelease.addSection(codeSection,      "code")
 		packageRelease.addSection(resourcesSection, "resources")

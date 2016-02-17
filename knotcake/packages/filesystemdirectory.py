@@ -41,9 +41,20 @@ class FileSystemDirectory(FileSystemNode):
 			self.childrenOffsets.append(offset)
 	
 	# FileSystemDirectory
-	def assimilate(self, path):
+	def createNode(self, cls, name):
+		childNode = cls()
+		childNode.name = name
+		self.children.append(childNode)
+		return childNode
+	
+	def createFile(self, name):
 		from filesystemfile import FileSystemFile
-		
+		return self.createNode(FileSystemFile, name)
+	
+	def createDirectory(self, name):
+		return self.createNode(FileSystemDirectory, name)
+	
+	def assimilate(self, path):
 		childNames = os.listdir(path)
 		for childName in childNames:
 			if childName.startswith("."): continue
@@ -51,10 +62,8 @@ class FileSystemDirectory(FileSystemNode):
 			childPath = os.path.join(path, childName)
 			childNode = None
 			if os.path.isdir(childPath):
-				childNode = FileSystemDirectory()
+				childNode = self.createDirectory(childName)
 			else:
-				childNode = FileSystemFile()
+				childNode = self.createFile(childName)
 			
-			childNode.name = childName
 			childNode.assimilate(childPath)
-			self.children.append(childNode)
