@@ -10,6 +10,28 @@ from models import User, Package, PackageRelease
 def PackageReleasesBlueprint(app):
 	blueprint = Blueprint("packagereleases", __name__)
 	
+	@blueprint.route("/packages/releases.json",  defaults = { "type": "json"  })
+	@blueprint.route("/packages/releases.jsonp", defaults = { "type": "jsonp" })
+	@api.json()
+	@api.jsonp("var packages = {}.map(Package.create);")
+	def packageReleases(type):
+		packages = []
+		packageDictionaries = {}
+		for package in Package.getAll(g.databaseSession):
+			packageDictionary = package.toDictionary()
+			packageDictionary["releases"] = packageDictionary.get("releases", [])
+			packageDictionaries[package.id] = packageDictionary
+			packages.append(packageDictionary)
+		
+		packageReleases = PackageRelease.getLatestPackageReleases(g.databaseSession)
+		for packageRelease in packageReleases:
+			packageDictionary = packageDictionaries[packageRelease.packageId]
+			if packageDictionary is None: continue
+			
+			packageDictionary["releases"].append(packageRelease.toDictionary())
+		
+		return packages
+	
 	@blueprint.route("/packages/<int:packageId>/releases.json",  defaults = { "type": "json"  })
 	@blueprint.route("/packages/<int:packageId>/releases.jsonp", defaults = { "type": "jsonp" })
 	@blueprint.route("/packages/<int:packageId>/releases/all.json",  defaults = { "type": "json"  })
