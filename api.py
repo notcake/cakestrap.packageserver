@@ -49,7 +49,7 @@ def json():
 			if "type" in kwargs and kwargs["type"] != "json": return object
 			
 			indent = None
-			if int(flask.request.args.get("pretty")): indent = 4
+			if int(flask.request.args.get("pretty", 0)): indent = 4
 			object = json.dumps(object, indent = indent)
 			object = flask.Response(object, mimetype = "application/json")
 			return object
@@ -70,7 +70,7 @@ def jsonp(expression):
 			if "type" in kwargs and kwargs["type"] != "jsonp": return object
 			
 			indent = None
-			if int(flask.request.args.get("pretty")): indent = 4
+			if int(flask.request.args.get("pretty", 0)): indent = 4
 			object = json.dumps(object, indent = indent)
 			object = expression.format(object)
 			object = flask.Response(object, mimetype = "application/javascript")
