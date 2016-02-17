@@ -6,6 +6,9 @@ from sqlalchemy import Boolean, Integer, BigInteger, Text
 from sqlalchemy import Enum
 from sqlalchemy.orm import relationship, column_property, reconstructor
 
+from sqlalchemy import and_
+from sqlalchemy.orm import aliased
+
 import knotcake.packages
 
 from base import Base
@@ -104,6 +107,29 @@ class PackageRelease(Base):
 		return os.path.join(self.getPackageReleasesDirectory(), self.getFullFileName())
 	
 	# Static
+	@classmethod
+	def getLatestPackageReleases(cls, databaseSession):
+		packageReleases2 = aliased(cls)
+		
+		subquery = databaseSession.query(
+				packageReleases2.packageId.label("package_releases_package_id"), \
+				func.max(packageReleases2.versionTimestamp).label("package_releases_max_version_timestamp") \
+			) \
+			.select_from(packageReleases2) \
+			.group_by(packageReleases2.packageId) \
+			.subquery()
+		
+		return databaseSession.query(cls) \
+			.select_from(cls) \
+			.join(
+				subquery, \
+				and_( \
+					cls.packageId == subquery.c.package_releases_package_id, \
+					cls.versionTimestamp == subquery.c.package_releases_max_version_timestamp \
+				) \
+			) \
+			.all()
+	
 	# Internal
 	@classmethod
 	def getPackageReleasesDirectory(cls):
