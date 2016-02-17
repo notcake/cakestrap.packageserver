@@ -22,8 +22,8 @@ class PackageRelease(Base):
 	resourcesDirectoryTreeId = Column("resources_directory_tree_id", BigInteger, ForeignKey("directory_trees.id"), nullable = True)
 	
 	package                  = relationship("Package",                  uselist = False)
-	codeDirectoryTree        = relationship("DirectoryTree",            uselist = False, lazy = "joined", cascade = "save-update, delete", foreign_keys = [codeDirectoryTreeId])
-	resourcesDirectoryTree   = relationship("DirectoryTree",            uselist = False, lazy = "joined", cascade = "save-update, delete", foreign_keys = [resourcesDirectoryTreeId])
+	codeDirectoryTree        = relationship("DirectoryTree",            uselist = False, single_parent = True, cascade = "save-update, delete", foreign_keys = [codeDirectoryTreeId])
+	resourcesDirectoryTree   = relationship("DirectoryTree",            uselist = False, single_parent = True, cascade = "save-update, delete", foreign_keys = [resourcesDirectoryTreeId])
 	dependencies             = relationship("PackageReleaseDependency", uselist = True,  cascade = "delete")
 	
 	PrimaryKeyConstraint(id)
