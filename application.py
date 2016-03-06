@@ -24,16 +24,19 @@ app.config["DatabaseEngine"] = sqlalchemy.create_engine("mysql://" + config["Dat
 app.config["DatabaseSessionFactory"] = sqlalchemy.orm.sessionmaker(bind = app.config["DatabaseEngine"])
 app.config["Path"] = os.path.dirname(os.path.abspath(__file__))
 app.config["SteamWebApi"] = knotcake.steam.WebApi(config["SteamApiKey"])
+app.config["Repository"] = config["Repository"]
 
 # Blueprints
 from jsxblueprint             import JSXBlueprint
 from loginblueprint           import LoginBlueprint
 from usersblueprint           import UsersBlueprint
+from repositoryblueprint      import RepositoryBlueprint
 from packagesblueprint        import PackagesBlueprint
 from packagereleasesblueprint import PackageReleasesBlueprint
 app.register_blueprint(JSXBlueprint(app))
 app.register_blueprint(LoginBlueprint(app))
 app.register_blueprint(UsersBlueprint(app))
+app.register_blueprint(RepositoryBlueprint(app))
 app.register_blueprint(PackagesBlueprint(app))
 app.register_blueprint(PackageReleasesBlueprint(app))
 
