@@ -21,6 +21,7 @@ class PackageRelease(Base):
 	versionTimestamp         = Column("version_timestamp",           BigInteger, nullable = False)
 	versionName              = Column("version_name",                Text,       nullable = False)
 	fileName                 = Column("file_name",                   Text,       nullable = False)
+	fileSize                 = Column("file_size",                   BigInteger, nullable = True)
 	codeDirectoryTreeId      = Column("code_directory_tree_id",      BigInteger, ForeignKey("directory_trees.id"), nullable = True)
 	resourcesDirectoryTreeId = Column("resources_directory_tree_id", BigInteger, ForeignKey("directory_trees.id"), nullable = True)
 	
@@ -32,7 +33,7 @@ class PackageRelease(Base):
 	PrimaryKeyConstraint(id)
 	UniqueConstraint(packageId, versionTimestamp)
 	
-	def generatePackage(self):
+	def generatePackage(self, databaseSession):
 		import knotcake.io
 		
 		fullFilePath = self.getFullFilePath()
@@ -48,6 +49,7 @@ class PackageRelease(Base):
 		packageRelease.addSection(resourcesSection, "resources")
 		
 		packageRelease.serialize(streamWriter)
+		self.fileSize = streamWriter.size
 		streamWriter.close()
 		
 		return fullFilePath
@@ -57,7 +59,7 @@ class PackageRelease(Base):
 		return self.fileName + ".bin"
 	
 	def remove(self, databaseSession):
-		self.removeFile()
+		self.removeFile(databaseSession)
 		
 		garbageCollectables = set()
 		if self.codeDirectoryTree      is not None: garbageCollectables.add(self.codeDirectoryTree.garbageCollectable)
@@ -72,7 +74,7 @@ class PackageRelease(Base):
 		for garbageCollectable in garbageCollectables:
 			garbageCollectable.gc(databaseSession)
 	
-	def removeFile(self):
+	def removeFile(self, databaseSession):
 		os.remove(self.getFullFileName())
 	
 	def toDictionary(self, out = None):
@@ -83,6 +85,7 @@ class PackageRelease(Base):
 		out["versionTimestamp"]         = self.versionTimestamp
 		out["versionName"]              = self.versionName
 		out["fileName"]                 = self.fileName
+		out["fileSize"]                 = self.fileSize
 		out["codeDirectoryTreeId"]      = self.codeDirectoryTreeId
 		out["resourcesDirectoryTreeId"] = self.resourcesDirectoryTreeId
 		

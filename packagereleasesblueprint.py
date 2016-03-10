@@ -81,7 +81,7 @@ def PackageReleasesBlueprint(app):
 		packageRelease = PackageRelease.getById(g.databaseSession, packageReleaseId)
 		if packageRelease is None: flask.abort(404)
 		
-		response = flask.send_file(packageRelease.generatePackage(), as_attachment = True, attachment_filename = packageRelease.getFullFileName(), conditional = True)
+		response = flask.send_file(packageRelease.generatePackage(g.databaseSession), as_attachment = True, attachment_filename = packageRelease.getFullFileName(), conditional = True)
 		return response
 	
 	@blueprint.route("/packages/<int:packageId>/releases/<int:packageReleaseId>/delete", methods = ["GET"])

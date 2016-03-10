@@ -51,6 +51,7 @@ class Package(Base):
 		packageRelease.versionTimestamp       = timestamp
 		packageRelease.versionName            = datetime.utcfromtimestamp(timestamp).date().isoformat()
 		packageRelease.fileName               = PathUtils.createFileName(self.name) + "-" + packageRelease.versionName + "-" + ("%08x" % packageRelease.versionTimestamp)
+		packageRelease.fileSize               = None
 		packageRelease.codeDirectoryTree      = codeDirectoryTree
 		packageRelease.resourcesDirectoryTree = resourcesDirectoryTree
 		
@@ -74,7 +75,7 @@ class Package(Base):
 		for packageRelease in self.releases:
 			if packageRelease.codeDirectoryTree      is not None: garbageCollectables.add(packageRelease.codeDirectoryTree.garbageCollectable)
 			if packageRelease.resourcesDirectoryTree is not None: garbageCollectables.add(packageRelease.resourcesDirectoryTree.garbageCollectable)
-			packageRelease.removeFile()
+			packageRelease.removeFile(databaseSession)
 		
 		if None in garbageCollectables:
 			garbageCollectables.remove(None)

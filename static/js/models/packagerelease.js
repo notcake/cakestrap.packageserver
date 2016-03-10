@@ -8,6 +8,7 @@ self.ctor = function(packageReleaseInformation)
 	this.versionTimestamp         = null;
 	this.versionName              = null;
 	this.fileName                 = null;
+	this.fileSize                 = null;
 	this.codeDirectoryTreeId      = null;
 	this.resourcesDirectoryTreeId = null;
 	
