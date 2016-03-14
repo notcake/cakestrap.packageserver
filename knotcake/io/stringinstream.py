@@ -30,7 +30,7 @@ class StringInStream(StreamReader):
 		self.position = seekPos
 	
 	# IInStream
-	def read(self, size):
-		data = self.data[self.position, self.position + size]
-		self._position += size
+	def read(self, length):
+		data = self.data[self.position, self.position + length]
+		self._position += length
 		return data

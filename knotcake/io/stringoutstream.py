@@ -26,10 +26,10 @@ class StringOutStream(StreamWriter):
 		self._position = seekPos
 	
 	# IOutStream
-	def write(self, data, size = None):
+	def write(self, data, length = None):
 		data = knotcake.bitconverter.stringToBytes(data)
-		if size is None: size = len(data)
-		if size < len(data): data = data[0:size]
+		if length is None: length = len(data)
+		if length < len(data): data = data[0:length]
 		
 		self.data[self.position:(self.position + len(data))] = data
 	
