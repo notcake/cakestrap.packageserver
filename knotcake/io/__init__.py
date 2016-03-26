@@ -1,6 +1,6 @@
 from ibasestream          import IBaseStream
-from iinstream            import IInStream
-from ioutstream           import IOutStream
+from iinputstream         import IInputStream
+from ioutputstream        import IOutputStream
 
 from endianness           import Endianness
 from istreamreader        import IStreamReader
@@ -12,8 +12,8 @@ from streamwriter         import StreamWriter
 # from bufferedstreamreader import BufferedStreamReader
 # from bufferedstreamwriter import BufferedStreamWriter
 
-from stringinstream       import StringInStream
-from stringoutstream      import StringOutStream
+from stringinputstream    import StringInputStream
+from stringoutputstream   import StringOutputStream
 
-from fileinstream         import FileInStream
-from fileoutstream        import FileOutStream
+from fileinputstream      import FileInputStream
+from fileoutputstream     import FileOutputStream

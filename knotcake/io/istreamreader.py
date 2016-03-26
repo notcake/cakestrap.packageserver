@@ -1,9 +1,9 @@
 from knotcake.oop import abstract
 
-from iinstream import IInStream
+from iinputstream import IInputStream
 
-class IStreamReader(IInStream):
-	# IInStream
+class IStreamReader(IInputStream):
+	# IInputStream
 	def toStreamReader(self):
 		return self
 	

@@ -1,10 +1,12 @@
 import os
 
-from streamreader import StreamReader
+import knotcake.bitconverter
 
-class FileInStream(StreamReader):
+from streamwriter import StreamWriter
+
+class FileOutputStream(StreamWriter):
 	def __init__(self, file):
-		super(FileInStreamn, self).__init__()
+		super(FileOutputStream, self).__init__()
 		
 		self.file = file
 	
@@ -30,10 +32,14 @@ class FileInStream(StreamReader):
 	def seekAbsolute(self, seekPos):
 		self.file.seek(seekPos)
 	
-	# IInStream
-	def read(self, size):
-		return self.file.read(size)
+	# IOutputStream
+	def write(self, data, size = None):
+		data = knotcake.bitconverter.stringToBytes(data)
+		if size is None: size = len(data)
+		if size < len(data): data = data[0:size]
+		
+		self.file.write(data)
 	
-	# FileInStream
+	# FileOutputStream
 	def flush(self):
 		self.file.flush()

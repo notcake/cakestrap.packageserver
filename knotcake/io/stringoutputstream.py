@@ -4,7 +4,7 @@ import knotcake.bitconverter
 
 from streamwriter import StreamWriter
 
-class StringOutStream(StreamWriter):
+class StringOutputStream(StreamWriter):
 	def __init__(self):
 		self.data = bytearray()
 		self._position = 0
@@ -25,7 +25,7 @@ class StringOutStream(StreamWriter):
 		seekPos = max(seekPos, self.size)
 		self._position = seekPos
 	
-	# IOutStream
+	# IOutputStream
 	def write(self, data, length = None):
 		data = knotcake.bitconverter.stringToBytes(data)
 		if length is None: length = len(data)
@@ -33,7 +33,7 @@ class StringOutStream(StreamWriter):
 		
 		self.data[self.position:(self.position + len(data))] = data
 	
-	# StringOutStream
+	# StringOutputStream
 	def clear(self):
 		self.data = bytearray()
 		self._position = 0

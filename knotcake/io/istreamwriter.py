@@ -1,9 +1,9 @@
 from knotcake.oop import abstract
 
-from ioutstream import IOutStream
+from ioutputstream import IOutputStream
 
-class IStreamWriter(IOutStream):
-	# IOutStream
+class IStreamWriter(IOutputStream):
+	# IOutputStream
 	def toStreamWriter(self):
 		return self
 	

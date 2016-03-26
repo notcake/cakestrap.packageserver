@@ -2,7 +2,7 @@ from knotcake.oop import abstract
 
 from ibasestream import IBaseStream
 
-class IInStream(IBaseStream):
+class IInputStream(IBaseStream):
 	@abstract
 	def read(self, length): pass
 	

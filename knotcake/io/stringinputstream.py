@@ -4,7 +4,7 @@ import knotcake.bitconverter
 
 from streamreader import StreamReader
 
-class StringInStream(StreamReader):
+class StringInputStream(StreamReader):
 	def __init__(self, data):
 		data = knotcake.bitconverter.stringToBytes(data)
 		
@@ -29,7 +29,7 @@ class StringInStream(StreamReader):
 		seekPos = max(seekPos, self.size)
 		self.position = seekPos
 	
-	# IInStream
+	# IInputStream
 	def read(self, length):
 		data = self.data[self.position, self.position + length]
 		self._position += length

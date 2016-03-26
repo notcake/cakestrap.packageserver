@@ -39,7 +39,7 @@ class PackageRelease(Base):
 		fullFilePath = self.getFullFilePath()
 		# if os.path.exists(fullFilePath): return fullFilePath
 		
-		streamWriter = knotcake.io.FileOutStream(open(fullFilePath, "wb"))
+		streamWriter = knotcake.io.FileOutputStream(open(fullFilePath, "wb"))
 		packageRelease = knotcake.packages.PackageRelease(self.package, self)
 		
 		codeSection      = knotcake.packages.FileSystemSection.fromDirectoryTree(self.codeDirectoryTree, "code")
