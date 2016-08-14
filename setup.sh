@@ -1,3 +1,4 @@
+sudo apt-get install python-dev
 sudo apt-get install libapache2-mod-wsgi
 sudo apt-get install virtualenv
 sudo apt-get install gcc
