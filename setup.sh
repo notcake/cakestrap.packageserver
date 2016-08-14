@@ -16,6 +16,7 @@ virtualenv venv
 	pip install flask
 	pip install sqlalchemy
 	pip install urllib3
+	pip install requests
 	pip install certifi
 	pip install mysql-python
 	pip install pyreact
